@@ -30,51 +30,21 @@
  * 
  * authors:Xu Waycell
  */
-#include "circuit.h"
-#include <QUuid>
+#ifndef WORKBENCHGRAPHICSVIEW_H
+#define	WORKBENCHGRAPHICSVIEW_H
 
-Circuit::Circuit() {
-}
+#include <QGraphicsView>
 
-Circuit::~Circuit() {
-}
+class QMenu;
+class QAction;
 
-QString Circuit::getUUID() {
-    if (uuid.isEmpty())
-        uuid = QUuid::createUuid();
-    return uuid;
-}
+class WorkbenchGraphicsView:public QGraphicsView{
+    Q_OBJECT
+public:
+    explicit WorkbenchGraphicsView(QWidget* parent = 0);
+    ~WorkbenchGraphicsView();
+private:
+    QAction* refreshAct;
+};
 
-QDomDocument Circuit::toDomDocument() const {
-    QDomDocument doc;
-    QDomElement root = doc.createElement("xml");
-    QDomElement circuit = doc.createElement("circuit");
-    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-        QDomElement element = doc.createElement("element");
-
-        QDomElement elementX = doc.createElement("x");
-        elementX.appendChild(doc.createTextNode("0"));
-        QDomElement elementY = doc.createElement("y");
-        elementY.appendChild(doc.createTextNode("0"));
-        //coordinate tags
-        element.appendChild(elementX);
-        element.appendChild(elementY);
-
-        circuit.appendChild(element);
-    }
-    root.appendChild(circuit);
-    doc.appendChild(root);
-    return doc;
-}
-
-Circuit::Element::Element() {
-}
-
-Circuit::Element::~Element() {
-}
-
-Circuit::Connection::Connection(Element* a, Element* b) : elementA(a), elementB(b) {
-}
-
-Circuit::Connection::~Connection() {
-}
+#endif

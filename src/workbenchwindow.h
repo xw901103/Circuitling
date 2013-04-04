@@ -30,51 +30,40 @@
  * 
  * authors:Xu Waycell
  */
-#include "circuit.h"
-#include <QUuid>
+#ifndef WORKBENCHWINDOW_H
+#define WORKBENCHWINDOW_H
 
-Circuit::Circuit() {
-}
+#include <QMainWindow>
 
-Circuit::~Circuit() {
-}
+class WorkbenchGraphicsView;
 
-QString Circuit::getUUID() {
-    if (uuid.isEmpty())
-        uuid = QUuid::createUuid();
-    return uuid;
-}
+class WorkbenchWindow : public QMainWindow {
+    Q_OBJECT
+public:
+    explicit WorkbenchWindow(QWidget* parent = 0);
+    ~WorkbenchWindow();
+    
+    inline QAction* newWorkbenchAction() const{return newWorkbenchAct;}
+    inline QAction* openFileAction() const{return openFileAct;}
+    inline QAction* saveAction() const{return saveAct;}
+    inline QAction* saveAsAction() const{return saveAsAct;}
+    inline QAction* closeWorkbenchAction() const{return closeWorkbenchAct;}
+    inline QAction* quitAction() const{return quitAct;}
+    inline QAction* showAboutAction() const{return showAboutAct;}
+private:
+    QMenu* fileMenu;
+    QAction* newWorkbenchAct;
+    QAction* openFileAct;
+    QAction* saveAct;
+    QAction* saveAsAct;
+    QAction* closeWorkbenchAct;
+    QAction* quitAct;
+    QMenu* helpMenu;
+    QAction* showAboutAct;
+    
+    WorkbenchGraphicsView* view;
+    QDockWidget* toolsDock;
+};
 
-QDomDocument Circuit::toDomDocument() const {
-    QDomDocument doc;
-    QDomElement root = doc.createElement("xml");
-    QDomElement circuit = doc.createElement("circuit");
-    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-        QDomElement element = doc.createElement("element");
+#endif
 
-        QDomElement elementX = doc.createElement("x");
-        elementX.appendChild(doc.createTextNode("0"));
-        QDomElement elementY = doc.createElement("y");
-        elementY.appendChild(doc.createTextNode("0"));
-        //coordinate tags
-        element.appendChild(elementX);
-        element.appendChild(elementY);
-
-        circuit.appendChild(element);
-    }
-    root.appendChild(circuit);
-    doc.appendChild(root);
-    return doc;
-}
-
-Circuit::Element::Element() {
-}
-
-Circuit::Element::~Element() {
-}
-
-Circuit::Connection::Connection(Element* a, Element* b) : elementA(a), elementB(b) {
-}
-
-Circuit::Connection::~Connection() {
-}

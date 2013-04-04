@@ -1,27 +1,77 @@
+/**
+ * Circuitling
+ * 
+ * Copyright (c) 2013, Circuitling Project
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * The views and conclusions contained in the software and documentation are those
+ * of the authors and should not be interpreted as representing official policies, 
+ * either expressed or implied, of the Circuitling Project.
+ * 
+ * authors:Xu Waycell
+ */
 #include "circuitling.h"
 #include "workbench.h"
+#include <QMessageBox>
 
-Circuitling::Circuitling(int argc, char** argv):QObject(0),app(0){
-	app = new QApplication(argc, argv);
+Circuitling::Circuitling(int argc, char** argv) : QObject(0), app(0) {
+    app = new QApplication(argc, argv);
 }
 
-Circuitling::~Circuitling(){
-	if(app)
-		delete app;
+Circuitling::~Circuitling() {
+//DO NOT DESTROY QApplication OBJECT
+//    if (app)
+//        delete app;
 }
 
-int Circuitling::exec(){
-	if(app){
-        workbenchList.append(new Workbench(this));
-        workbenchList.at(0)->show();
-        workbenchList.append(new Workbench(this));
-        workbenchList.at(1)->show();
-		return app->exec();
-	}
+void Circuitling::createWorkbench() {
+    Workbench* workbench = new Workbench(this);
+    workbenchList.append(workbench);
+    workbench->show();
+}
+
+void Circuitling::removeWorkbench(Workbench* workbench){
+    if(workbench){
+        if(workbenchList.removeOne(workbench)){
+            workbench->close();
+            delete workbench;
+        }
+    }
+}
+
+int Circuitling::exec() {
+    if (app) {
+        createWorkbench();
+        return app->exec();
+    }
     return -1;
 }
 
-void Circuitling::quit(){
-	if(app)
-		app->quit();
+void Circuitling::quit() {
+    if (app)
+        app->quit();
+}
+
+void Circuitling::showAbout(){
+    QMessageBox::about(0, tr("About"), tr("Circuitling\nA free tool to design and simulate circuits ;)"));
 }
