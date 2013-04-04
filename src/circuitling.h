@@ -2,8 +2,9 @@
 #define CIRCUITLING_H
 
 #include <QApplication>
+#include <QList>
 
-class MainWindow;
+class Workbench;
 
 class Circuitling:public QObject{
 	Q_OBJECT
@@ -15,7 +16,7 @@ public:
 	void quit();
 private:
 	QApplication* app;
-	MainWindow* mainwindow;
+    QList<Workbench*> workbenchList;
 };
 
 #endif

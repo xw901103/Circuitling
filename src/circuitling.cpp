@@ -1,9 +1,8 @@
 #include "circuitling.h"
-#include "mainwindow.h"
+#include "workbench.h"
 
-Circuitling::Circuitling(int argc, char** argv):QObject(0),app(0),mainwindow(0){
+Circuitling::Circuitling(int argc, char** argv):QObject(0),app(0){
 	app = new QApplication(argc, argv);
-	mainwindow = new MainWindow();
 }
 
 Circuitling::~Circuitling(){
@@ -13,13 +12,16 @@ Circuitling::~Circuitling(){
 
 int Circuitling::exec(){
 	if(app){
-		mainwindow->show();
+        workbenchList.append(new Workbench(this));
+        workbenchList.at(0)->show();
+        workbenchList.append(new Workbench(this));
+        workbenchList.at(1)->show();
 		return app->exec();
 	}
+    return -1;
 }
 
 void Circuitling::quit(){
 	if(app)
 		app->quit();
 }
-

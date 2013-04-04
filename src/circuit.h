@@ -2,6 +2,8 @@
 #define CIRCUIT_H
 
 #include <QString>
+#include <QMap>
+#include <QDomDocument>
 
 class Circuit{
 public:
@@ -19,6 +21,31 @@ public:
 
 	Circuit();
 	~Circuit();
+
+	Element* getElement(const QString& uuid);
+	QString addElement(const Element&);
+	void delElement(const QString& uuid);
+
+	Connection* getConnection(const QString& uuid);
+	QString addConnection(const Connection&);
+	void delConnection(const QString& uuid);
+
+	/**
+	* if there does not have one then generate one
+	*/
+	QString getUUID();
+
+	inline void setUUID(const QString& _uuid){uuid = _uuid;}
+
+	inline QString getTitle() const{return title;}
+	inline void setTitle(const QString& _title){title = _title;}
+
+	QDomDocument toDomDocument() const;
+private:
+	QMap<QString, Element> elementMap;
+	QMap<QString, Connection> connectionMap;
+	QString uuid;
+	QString title;
 };
 
 class Circuit::Element{
