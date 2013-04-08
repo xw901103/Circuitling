@@ -45,24 +45,33 @@ public:
     
     inline QAction* newWorkbenchAction() const{return newWorkbenchAct;}
     inline QAction* openFileAction() const{return openFileAct;}
+    inline QAction* exportAction() const{return exportAct;}
     inline QAction* saveAction() const{return saveAct;}
     inline QAction* saveAsAction() const{return saveAsAct;}
     inline QAction* closeWorkbenchAction() const{return closeWorkbenchAct;}
     inline QAction* quitAction() const{return quitAct;}
+    inline QAction* showPreferencesAction(){return showPrefAct;}
     inline QAction* showAboutAction() const{return showAboutAct;}
+    inline WorkbenchGraphicsView* graphicsView() const{return view;}
 private:
+    void initializeMenus();
+    void initializeToolBox();
+    
     QMenu* fileMenu;
     QAction* newWorkbenchAct;
     QAction* openFileAct;
+    QAction* exportAct;
     QAction* saveAct;
     QAction* saveAsAct;
     QAction* closeWorkbenchAct;
     QAction* quitAct;
+    QMenu* toolsMenu;
+    QAction* showPrefAct;
     QMenu* helpMenu;
     QAction* showAboutAct;
     
     WorkbenchGraphicsView* view;
-    QDockWidget* toolsDock;
+    QDockWidget* toolBoxDock;
 };
 
 #endif

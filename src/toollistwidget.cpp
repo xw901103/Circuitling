@@ -30,54 +30,30 @@
  * 
  * authors:Xu Waycell
  */
-#include "circuit.h"
-#include <QUuid>
+#include "toollistwidget.h"
 
-Circuit::Circuit() {
+ToolListWidget::ToolListWidget(QWidget* parent) : QListWidget(parent) {
+    setUniformItemSizes(true);
+    setResizeMode(QListView::Adjust);
+    setViewMode(QListWidget::IconMode);
+    setFocusPolicy(Qt::NoFocus);
+    setFrameShape(QFrame::NoFrame);
+    //background
+    QPalette toolListWidgetPalette(palette());
+    toolListWidgetPalette.setColor(QPalette::Base, Qt::transparent);
+    setPalette(toolListWidgetPalette);
 }
 
-Circuit::~Circuit() {
+ToolListWidget::~ToolListWidget() {
 }
 
-QString Circuit::getUUID() {
-    if (uuid.isEmpty())
-        uuid = QUuid::createUuid();
-    return uuid; //it will cast to QString
+void ToolListWidget::addItem(const QPixmap& icon, const QString& toolTip) {
+    QListWidgetItem* item = new QListWidgetItem(this);
+    item->setIcon(icon);
+    item->setToolTip(toolTip);
+    QListWidget::addItem(item);
 }
 
-QDomDocument Circuit::toDomDocument(){
-    QDomDocument doc;
-    QDomElement root = doc.createElement("xml");
-    QDomElement circuit = doc.createElement("circuit");
-    QDomElement circuitUUID = doc.createElement("uuid");
-    circuitUUID.appendChild(doc.createCDATASection(getUUID()));
-    circuit.appendChild(circuitUUID);
-    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-        QDomElement element = doc.createElement("element");
-
-        QDomElement elementX = doc.createElement("x");
-        elementX.appendChild(doc.createTextNode("0"));
-        QDomElement elementY = doc.createElement("y");
-        elementY.appendChild(doc.createTextNode("0"));
-        //coordinate tags
-        element.appendChild(elementX);
-        element.appendChild(elementY);
-
-        circuit.appendChild(element);
-    }
-    root.appendChild(circuit);
-    doc.appendChild(root);
-    return doc;
-}
-
-Circuit::Element::Element() {
-}
-
-Circuit::Element::~Element() {
-}
-
-Circuit::Connection::Connection(Element* a, Element* b) : elementA(a), elementB(b) {
-}
-
-Circuit::Connection::~Connection() {
+void ToolListWidget::addItem(const QString& label) {
+    QListWidget::addItem(label);
 }

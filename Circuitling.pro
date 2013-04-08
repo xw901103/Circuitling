@@ -17,12 +17,17 @@ QT += xml
 # Input
 HEADERS += src/circuit.h \
            src/circuitling.h \
+           src/preferencesdialog.h \
+           src/toollistwidget.h \
     	   src/workbenchwindow.h \
            src/workbenchgraphicsview.h \
 	       src/workbench.h
 SOURCES += src/circuit.cpp \
     	   src/circuitling.cpp \
 	       src/main.cpp \
+           src/preferencesdialog.cpp \
+           src/toollistwidget.cpp \
     	   src/workbenchwindow.cpp \
            src/workbenchgraphicsview.cpp \
     	   src/workbench.cpp
+RESOURCES += "Circuitling.qrc"

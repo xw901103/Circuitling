@@ -37,6 +37,7 @@
 #include <QList>
 
 class Workbench;
+class PreferencesDialog;
 
 class Circuitling : public QObject {
     Q_OBJECT
@@ -44,6 +45,7 @@ public slots:
     void createWorkbench();
     void removeWorkbench(Workbench*);
     void quit();
+    void showPreferences();
     void showAbout();
 public:
     explicit Circuitling(int argc, char** argv);
@@ -52,7 +54,8 @@ public:
     int exec();
 private:
     QApplication* app;
-    QList<Workbench*> workbenchList;
+    PreferencesDialog* prefDialog;
+    QList<Workbench*> workbenchList;    
 };
 
 #endif

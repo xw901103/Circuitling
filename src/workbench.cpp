@@ -38,20 +38,23 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextStream>
+#include "workbenchgraphicsview.h"
 
-Workbench::Workbench(Circuitling* parent) : QObject(static_cast<QObject*>(parent)), circuit(0), window(0) {
+Workbench::Workbench(Circuitling* parent) : QObject(static_cast<QObject*> (parent)), circuit(0), window(0) {
     circuit = new Circuit();
     window = new WorkbenchWindow();
-    if(window){
-        if(parent){
+    if (window) {
+        if (parent) {
             connect(window->closeWorkbenchAction(), SIGNAL(triggered()), this, SLOT(close()));
             connect(this, SIGNAL(closed(Workbench*)), parent, SLOT(removeWorkbench(Workbench*)));
 
             connect(window->newWorkbenchAction(), SIGNAL(triggered()), parent, SLOT(createWorkbench()));
             connect(window->openFileAction(), SIGNAL(triggered()), this, SLOT(openFile()));
+            connect(window->exportAction(), SIGNAL(triggered()), this, SLOT(exportTo()));
             connect(window->saveAction(), SIGNAL(triggered()), this, SLOT(save()));
             connect(window->saveAsAction(), SIGNAL(triggered()), this, SLOT(saveAs()));
             connect(window->quitAction(), SIGNAL(triggered()), parent, SLOT(quit()));
+            connect(window->showPreferencesAction(), SIGNAL(triggered()), parent, SLOT(showPreferences()));
             connect(window->showAboutAction(), SIGNAL(triggered()), parent, SLOT(showAbout()));
         }
         window->setWindowTitle(tr("Circuitling - New Workbench"));
@@ -65,30 +68,55 @@ Workbench::~Workbench() {
 
 void Workbench::openFile() {
     QString filepath = QFileDialog::getOpenFileName(window, tr("Open file..."));
+    if(filepath.isEmpty())
+        return;
     QFile file(filepath);
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(window, tr("Warning"), tr("Cannot read file.\npath:%1").arg(filepath));
         return;
     }
-    if(window)
+    if (window)
         window->setWindowTitle(tr("Circuitling - %2").arg(file.fileName()));
     file.close();
 }
 
-void Workbench::save() {
-    if(!circuit)
+void Workbench::exportTo() {
+    if (!circuit)
         return;
-    QString filepath = QFileDialog::getSaveFileName(window, tr("Save..."));
+    QString filepath = QFileDialog::getSaveFileName(window, tr("Export..."));
+    if(filepath.isEmpty())
+        return;
     QFile file(filepath);
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::warning(window, tr("Warning"), tr("Cannot write file.\npath:%1").arg(filepath));
         return;
-    }   
+    }
+
+    QGraphicsScene* currentScene = window->graphicsView()->scene();
+    QPixmap pixmap(currentScene->width(), currentScene->height());
+    QPainter exportPainter(&pixmap);
+    currentScene->render(&exportPainter);
+    exportPainter.end();
+    pixmap.save(&file, "PNG");
+    file.close();
+}
+
+void Workbench::save() {
+    if (!circuit)
+        return;
+    QString filepath = QFileDialog::getSaveFileName(window, tr("Save..."));
+    if(filepath.isEmpty())
+        return;
+    QFile file(filepath);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(window, tr("Warning"), tr("Cannot write file.\npath:%1").arg(filepath));
+        return;
+    }
     QDomDocument doc = circuit->toDomDocument();
     QDomElement root = doc.documentElement();
     doc.insertBefore(doc.createComment("Created by Circuitling"), root);
     QDomElement workbench = doc.createElement("workbench");
-    QDomElement workbenchWidth = doc.createElement("width");    
+    QDomElement workbenchWidth = doc.createElement("width");
     QDomElement workbenchHeight = doc.createElement("height");
     //test
     workbenchWidth.appendChild(doc.createTextNode("800"));
@@ -98,20 +126,22 @@ void Workbench::save() {
     workbench.appendChild(workbenchHeight);
     root.appendChild(workbench);
     QTextStream out(&file);
-    out<<doc;
+    out << doc;
     file.close();
-    if(window)
+    if (window)
         window->setWindowTitle(tr("Circuitling - %2").arg(file.fileName()));
 }
 
 void Workbench::saveAs() {
     QString filepath = QFileDialog::getSaveFileName(window, tr("Save as..."));
+    if(filepath.isEmpty())
+        return;
     QFile file(filepath);
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::warning(window, tr("Warning"), tr("Cannot write file.\npath:%1").arg(filepath));
         return;
     }
-    if(window)
+    if (window)
         window->setWindowTitle(tr("Circuitling - %2").arg(file.fileName()));
     file.close();
 }
@@ -122,7 +152,7 @@ void Workbench::show() {
 }
 
 void Workbench::close() {
-    if (window){
+    if (window) {
         window->close();
         emit closed(this);
     }

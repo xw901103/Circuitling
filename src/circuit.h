@@ -80,7 +80,7 @@ public:
         title = _title;
     }
 
-    QDomDocument toDomDocument() const;
+    QDomDocument toDomDocument();
 private:
     QMap<QString, Element> elementMap;
     QMap<QString, Connection> connectionMap;

@@ -31,10 +31,11 @@
  * authors:Xu Waycell
  */
 #include "circuitling.h"
+#include "preferencesdialog.h"
 #include "workbench.h"
 #include <QMessageBox>
 
-Circuitling::Circuitling(int argc, char** argv) : QObject(0), app(0) {
+Circuitling::Circuitling(int argc, char** argv) : QObject(0), app(0), prefDialog(0) {
     app = new QApplication(argc, argv);
 }
 
@@ -70,6 +71,12 @@ int Circuitling::exec() {
 void Circuitling::quit() {
     if (app)
         app->quit();
+}
+
+void Circuitling::showPreferences(){
+    if(!prefDialog)
+        prefDialog = new PreferencesDialog();
+    prefDialog->exec();
 }
 
 void Circuitling::showAbout(){

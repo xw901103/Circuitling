@@ -30,54 +30,20 @@
  * 
  * authors:Xu Waycell
  */
-#include "circuit.h"
-#include <QUuid>
+#ifndef TOOLLISTWIDGET_H
+#define	TOOLLISTWIDGET_H
 
-Circuit::Circuit() {
-}
+#include <QListWidget>
 
-Circuit::~Circuit() {
-}
+class ToolListWidget : public QListWidget {
 
-QString Circuit::getUUID() {
-    if (uuid.isEmpty())
-        uuid = QUuid::createUuid();
-    return uuid; //it will cast to QString
-}
+    Q_OBJECT
+public:
+    explicit ToolListWidget(QWidget* parent);
+    virtual ~ToolListWidget();
+    
+    void addItem(const QPixmap& icon, const QString& toolTip);
+    void addItem(const QString&);
+};
 
-QDomDocument Circuit::toDomDocument(){
-    QDomDocument doc;
-    QDomElement root = doc.createElement("xml");
-    QDomElement circuit = doc.createElement("circuit");
-    QDomElement circuitUUID = doc.createElement("uuid");
-    circuitUUID.appendChild(doc.createCDATASection(getUUID()));
-    circuit.appendChild(circuitUUID);
-    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-        QDomElement element = doc.createElement("element");
-
-        QDomElement elementX = doc.createElement("x");
-        elementX.appendChild(doc.createTextNode("0"));
-        QDomElement elementY = doc.createElement("y");
-        elementY.appendChild(doc.createTextNode("0"));
-        //coordinate tags
-        element.appendChild(elementX);
-        element.appendChild(elementY);
-
-        circuit.appendChild(element);
-    }
-    root.appendChild(circuit);
-    doc.appendChild(root);
-    return doc;
-}
-
-Circuit::Element::Element() {
-}
-
-Circuit::Element::~Element() {
-}
-
-Circuit::Connection::Connection(Element* a, Element* b) : elementA(a), elementB(b) {
-}
-
-Circuit::Connection::~Connection() {
-}
+#endif

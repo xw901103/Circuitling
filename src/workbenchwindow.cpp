@@ -32,20 +32,39 @@
  */
 #include "workbenchwindow.h"
 #include "workbenchgraphicsview.h"
+#include "toollistwidget.h"
 #include <QtGui>
 
 WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 , fileMenu(0)
 , newWorkbenchAct(0)
 , openFileAct(0)
+, exportAct(0)
 , saveAct(0)
 , saveAsAct(0)
 , closeWorkbenchAct(0)
 , quitAct(0)
+, toolsMenu(0)
+, showPrefAct(0)
 , helpMenu(0)
 , showAboutAct(0)
 , view(0)
-, toolsDock(0) {
+, toolBoxDock(0) {
+    initializeMenus();
+    initializeToolBox();
+
+    setWindowTitle(tr("Circuitling - Workbench"));
+
+    view = new WorkbenchGraphicsView(this);
+    setCentralWidget(view);
+}
+
+WorkbenchWindow::~WorkbenchWindow() {
+    if (view)
+        delete view;
+}
+
+void WorkbenchWindow::initializeMenus() {
     fileMenu = new QMenu(this);
     fileMenu->setTitle(tr("File"));
 
@@ -54,6 +73,9 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 
     openFileAct = new QAction(this);
     openFileAct->setText(tr("Open File"));
+
+    exportAct = new QAction(this);
+    exportAct->setText(tr("Export..."));
 
     saveAct = new QAction(this);
     saveAct->setText(tr("Save..."));
@@ -71,8 +93,20 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
     fileMenu->addAction(openFileAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(exportAct);
+    fileMenu->addSeparator();    
     fileMenu->addAction(closeWorkbenchAct);
     fileMenu->addAction(quitAct);
+
+    toolsMenu = new QMenu(this);
+    toolsMenu->setTitle(tr("Tools"));
+
+    showPrefAct = new QAction(this);
+    showPrefAct->setMenuRole(QAction::PreferencesRole);
+    showPrefAct->setText(tr("Preferences..."));
+
+    toolsMenu->addAction(showPrefAct);
 
     helpMenu = new QMenu(this);
     helpMenu->setTitle(tr("Help"));
@@ -84,19 +118,54 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
     helpMenu->addAction(showAboutAct);
 
     menuBar()->addMenu(fileMenu);
+    menuBar()->addMenu(toolsMenu);
     menuBar()->addMenu(helpMenu);
-
-    setWindowTitle(tr("Circuitling - Workbench"));
-
-    view = new WorkbenchGraphicsView(this);
-    toolsDock = new QDockWidget(this);
-    toolsDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
-    toolsDock->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
-    addDockWidget(static_cast<Qt::DockWidgetArea>(1), toolsDock);
-    setCentralWidget(view);
 }
 
-WorkbenchWindow::~WorkbenchWindow() {
-    if (view)
-        delete view;
+void WorkbenchWindow::initializeToolBox() {
+    toolBoxDock = new QDockWidget(this);
+    toolBoxDock->setWindowTitle(tr("ToolBox"));
+    toolBoxDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+    toolBoxDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    QWidget* toolBoxWidget = new QWidget(toolBoxDock);
+    QVBoxLayout* toolBoxLayout = new QVBoxLayout(toolBoxWidget);
+    toolBoxWidget->setLayout(toolBoxLayout);
+
+    QGroupBox* cursorBox = new QGroupBox(toolBoxWidget);
+    cursorBox->setTitle(tr("Cursor"));
+    QVBoxLayout* cursorBoxLayout = new QVBoxLayout(cursorBox);
+    cursorBox->setLayout(cursorBoxLayout);
+    ToolListWidget* cursorListWidget = new ToolListWidget(toolBoxWidget);
+    //cursor items for test begin
+    cursorListWidget->addItem(QPixmap(":/resources/cursors/arrow.png"), tr("Select"));
+    cursorListWidget->addItem(QPixmap(":/resources/cursors/hand1.png"), tr("Move"));
+    cursorListWidget->addItem(QPixmap(":/resources/cursors/cross.png"), tr("Connect"));
+    cursorListWidget->addItem(QPixmap(":/resources/cursors/zoom.png"), tr("Zoom"));
+    //cursor items for test end
+    cursorBoxLayout->addWidget(cursorListWidget);
+
+    QGroupBox* elementBox = new QGroupBox(toolBoxWidget);
+    elementBox->setTitle(tr("Element"));
+    QVBoxLayout* elementBoxLayout = new QVBoxLayout(elementBox);
+    elementBox->setLayout(elementBoxLayout);
+    ToolListWidget* elementListWidget = new ToolListWidget(toolBoxWidget);
+    //element items for test begin
+    elementListWidget->addItem(QPixmap(":/resources/elements/dc_voltage_source.png"), tr("DC Voltage Source"));
+    elementListWidget->addItem(QPixmap(":/resources/elements/ac_voltage_source.png"), tr("AC Voltage Source"));
+    elementListWidget->addItem(QPixmap(":/resources/elements/resistor.png"), tr("Resistor"));
+    elementListWidget->addItem(QPixmap(":/resources/elements/capacitor.png"), tr("Capacitor"));
+    elementListWidget->addItem(QPixmap(":/resources/elements/inductor.png"), tr("Inductor"));
+    elementListWidget->addItem(QPixmap(":/resources/elements/diode.png"), tr("Diode"));
+    //element items for test end
+    elementBoxLayout->addWidget(elementListWidget);
+    
+    toolBoxLayout->addWidget(cursorBox);
+    toolBoxLayout->addWidget(elementBox);
+    QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    toolBoxLayout->addItem(verticalSpacer);
+    toolBoxDock->setWidget(toolBoxWidget);
+
+
+    addDockWidget(static_cast<Qt::DockWidgetArea> (1), toolBoxDock);
 }

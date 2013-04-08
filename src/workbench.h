@@ -45,6 +45,7 @@ signals:
     void closed(Workbench*);
 public slots:
     void openFile();
+    void exportTo();
     void save();
     void saveAs();
     void close();

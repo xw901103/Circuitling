@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RCC version="1.0">
+    <qresource>
+        <file>resources/cursors/arrow.png</file>
+        <file>resources/cursors/cross.png</file>
+        <file>resources/cursors/hand1.png</file>
+        <file>resources/cursors/hand2.png</file>
+        <file>resources/cursors/zoom.png</file>
+
+        <file>resources/elements/dc_voltage_source.png</file>
+        <file>resources/elements/ac_voltage_source.png</file>
+        <file>resources/elements/resistor.png</file>
+        <file>resources/elements/capacitor.png</file>
+        <file>resources/elements/inductor.png</file>
+        <file>resources/elements/diode.png</file>
+    </qresource>
+</RCC>
