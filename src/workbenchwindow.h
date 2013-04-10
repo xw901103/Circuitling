@@ -35,6 +35,7 @@
 
 #include <QMainWindow>
 
+class ToolBoxDockWidget;
 class WorkbenchGraphicsView;
 
 class WorkbenchWindow : public QMainWindow {
@@ -50,9 +51,12 @@ public:
     inline QAction* saveAsAction() const{return saveAsAct;}
     inline QAction* closeWorkbenchAction() const{return closeWorkbenchAct;}
     inline QAction* quitAction() const{return quitAct;}
+    inline QAction* undoAction() const{return undoAct;}
+    inline QAction* redoAction() const{return redoAct;}
     inline QAction* showPreferencesAction(){return showPrefAct;}
     inline QAction* showAboutAction() const{return showAboutAct;}
     inline WorkbenchGraphicsView* graphicsView() const{return view;}
+    inline ToolBoxDockWidget* toolBox() const{return toolBoxDock;}
 private:
     void initializeMenus();
     void initializeToolBox();
@@ -65,13 +69,16 @@ private:
     QAction* saveAsAct;
     QAction* closeWorkbenchAct;
     QAction* quitAct;
+    QMenu* editMenu;
+    QAction* undoAct;
+    QAction* redoAct;
     QMenu* toolsMenu;
     QAction* showPrefAct;
     QMenu* helpMenu;
     QAction* showAboutAct;
     
     WorkbenchGraphicsView* view;
-    QDockWidget* toolBoxDock;
+    ToolBoxDockWidget* toolBoxDock;
 };
 
 #endif

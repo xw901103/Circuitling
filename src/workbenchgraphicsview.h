@@ -40,9 +40,13 @@ class QAction;
 
 class WorkbenchGraphicsView:public QGraphicsView{
     Q_OBJECT
+signals:
+    void sceneClicked(qreal x, qreal y);
 public:
     explicit WorkbenchGraphicsView(QWidget* parent = 0);
     ~WorkbenchGraphicsView();
+protected:
+    void mousePressEvent(QMouseEvent*);
 private:
     QAction* refreshAct;
 };

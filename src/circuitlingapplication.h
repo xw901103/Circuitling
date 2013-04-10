@@ -30,35 +30,33 @@
  * 
  * authors:Xu Waycell
  */
-#ifndef WORKBENCH_H
-#define WORKBENCH_H
+#ifndef CIRCUITLINGAPPLICATION_H
+#define CIRCUITLINGAPPLICATION_H
 
-#include <QObject>
+#include <QApplication>
+#include <QList>
 
-class CircuitlingApplication;
-class Circuit;
-class WorkbenchWindow;
+class Workbench;
+class PreferencesDialog;
 
-class Workbench : public QObject {
+class CircuitlingApplication : public QObject {
     Q_OBJECT
-signals:
-    void closed(Workbench*);
 public slots:
-    void openFile();
-    void exportTo();
-    void save();
-    void saveAs();
-    void close();
-    
-    void addItemToScene(qreal x, qreal y);
+    void createWorkbench();
+    void removeWorkbench(Workbench*);
+    void quit();
+    void showPreferences();
+    void showAbout();
 public:
-    explicit Workbench(CircuitlingApplication* parent);
-    ~Workbench();
+    explicit CircuitlingApplication(int argc, char** argv);
+    ~CircuitlingApplication();
 
-    void show();
+    int exec();
 private:
-    Circuit* circuit;
-    WorkbenchWindow* window;
+    QApplication* app;
+    PreferencesDialog* prefDialog;
+    QList<Workbench*> workbenchList;    
 };
 
 #endif
+

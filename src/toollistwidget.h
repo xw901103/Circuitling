@@ -33,17 +33,43 @@
 #ifndef TOOLLISTWIDGET_H
 #define	TOOLLISTWIDGET_H
 
+#include "global.h"
 #include <QListWidget>
 
-class ToolListWidget : public QListWidget {
+class ToolListWidget;
 
+class ToolListItem : public QListWidgetItem {
+public:
+    explicit ToolListItem(const QPixmap& icon, const QString& toolTip, ToolListWidget* parent = 0);
+    ~ToolListItem();
+
+    inline Circuitling::ToolType getToolType() const {
+        return toolType;
+    }
+
+    inline void setToolType(Circuitling::ToolType _type) {
+        toolType = _type;
+    }
+
+    inline Circuitling::ToolItem getToolItem() const {
+        return toolItem;
+    }
+
+    inline void setToolItem(Circuitling::ToolItem _item) {
+        toolItem = _item;
+    }
+private:
+    Circuitling::ToolType toolType;
+    Circuitling::ToolItem toolItem;
+};
+
+class ToolListWidget : public QListWidget {
     Q_OBJECT
 public:
     explicit ToolListWidget(QWidget* parent);
     virtual ~ToolListWidget();
-    
-    void addItem(const QPixmap& icon, const QString& toolTip);
-    void addItem(const QString&);
+
+    void addItem(ToolListItem*);
 };
 
 #endif

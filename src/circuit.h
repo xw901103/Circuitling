@@ -1,18 +1,18 @@
 /**
  * Circuitling
- * 
+ *
  * Copyright (c) 2013, Circuitling Project
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer. 
+ * list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution. 
- * 
+ * and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,16 +23,17 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
- * 
+ *
  * authors:Xu Waycell
  */
 #ifndef CIRCUIT_H
 #define CIRCUIT_H
 
+#include "global.h"
 #include <QString>
 #include <QMap>
 #include <QDomDocument>
@@ -42,25 +43,25 @@ public:
     class Element;
     class Connection;
 
-    enum ElementType {
-        Node,
-        Resistor,
-        VolatageSource,
-        CurrentSource,
-        Capacitor,
-        Indicator,
-        CustomizedElement
-    };
-
     Circuit();
     ~Circuit();
 
-    Element* getElement(const QString& uuid);
-    QString addElement(const Element&);
-    void delElement(const QString& uuid);
+    const Element* getElement(const QString& uuid) const;
+    /**
+     * add a new element then return its uuid.
+     * @param _element element
+     * @return uuid of this element in the circuit
+     */
+    QString addElement(const Element& _element);
+    void delElement(const QString& _uuid);
 
-    Connection* getConnection(const QString& uuid);
-    QString addConnection(const Connection&);
+    const Connection* getConnection(const QString& uuid) const;
+    /**
+     * add a new connection then return its uuid.
+     * @param _connection connection
+     * @return uuid of this element in the circuit
+     */
+    QString addConnection(const Connection& _connection);
     void delConnection(const QString& uuid);
 
     /**
@@ -91,11 +92,22 @@ private:
 };
 
 class Circuit::Element {
+    QString uuid;
+    Circuitling::ElementType type;
     QString label;
-    ElementType type;
+    qreal x;
+    qreal y;
 public:
-    Element();
+    explicit Element(Circuitling::ElementType _type);
+    explicit Element(const QString& _label, Circuitling::ElementType _type);
+    explicit Element(qreal _x, qreal _y, Circuitling::ElementType _type);
+    Element(const Element&);
     ~Element();
+
+    Element& operator =(const Element&);
+
+    bool operator ==(const Element&) const;
+    bool operator !=(const Element&) const;
 
     inline QString getLabel() const {
         return label;
@@ -105,36 +117,72 @@ public:
         label = _label;
     }
 
-    inline ElementType getType() const {
+    inline Circuitling::ElementType getType() const {
         return type;
     }
 
-    inline void setType(ElementType _type) {
+    inline void setType(Circuitling::ElementType _type) {
         type = _type;
+    }
+
+    inline void setUUID(const QString& _uuid) {
+        uuid = _uuid;
+    }
+
+    inline QString getUUID() const {
+        return uuid;
+    }
+
+    inline qreal getX() const {
+        return x;
+    }
+
+    inline qreal getY() const {
+        return y;
+    }
+
+    inline void locate(qreal _x, qreal _y) {
+        x = _x;
+        y = _y;
     }
 };
 
 class Circuit::Connection {
+    QString uuid;
     Element* elementA;
     Element* elementB;
 public:
     explicit Connection(Element* a, Element* b);
+    Connection(const Connection&);
     ~Connection();
 
-    Element* getElementA() const {
+    Connection& operator =(const Connection&);
+
+    bool operator==(const Connection&) const;
+    bool operator!=(const Connection&) const;
+
+    inline Element* getElementA() const {
         return elementA;
     }
 
-    void setElementA(Element* _a) {
+    inline void setElementA(Element* _a) {
         elementA = _a;
     }
 
-    Element* getElementB() const {
+    inline Element* getElementB() const {
         return elementB;
     }
 
-    void setElementB(Element* _b) {
+    inline void setElementB(Element* _b) {
         elementB = _b;
+    }
+
+    inline QString getUUID() const {
+        return uuid;
+    }
+
+    inline void setUUID(QString _uuid) {
+        uuid = _uuid;
     }
 
 };

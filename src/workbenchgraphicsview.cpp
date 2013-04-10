@@ -31,6 +31,7 @@
  * authors:Xu Waycell
  */
 #include "workbenchgraphicsview.h"
+#include "workbenchgraphicsscene.h"
 #include <QtGui>
 
 WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(parent)
@@ -39,15 +40,22 @@ WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(pa
     refreshAct->setText(tr("Refresh"));
     addAction(refreshAct);
     setContextMenuPolicy(Qt::ActionsContextMenu);
-    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    
-    setScene(new QGraphicsScene(this));
+
+    setScene(new WorkbenchGraphicsScene(this));
     //for test reason, we set it to 800x600 with white background
     scene()->setSceneRect(0, 0, 800, 600);
     scene()->setBackgroundBrush(Qt::white);
-    
+//    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
     scene()->addText(tr("Workbench Graphics View"), scene()->font());
 }
 
 WorkbenchGraphicsView::~WorkbenchGraphicsView() {
+}
+
+void WorkbenchGraphicsView::mousePressEvent(QMouseEvent* event) {
+    if (event) {
+        emit sceneClicked(event->x(), event->y());
+    }
+    return QGraphicsView::mousePressEvent(event);
 }

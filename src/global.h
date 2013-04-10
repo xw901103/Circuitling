@@ -30,55 +30,52 @@
  * 
  * authors:Xu Waycell
  */
-#include "circuitling.h"
-#include "preferencesdialog.h"
-#include "workbench.h"
-#include <QMessageBox>
+#ifndef GLOBAL_H
+#define	GLOBAL_H
 
-Circuitling::Circuitling(int argc, char** argv) : QObject(0), app(0), prefDialog(0) {
-    app = new QApplication(argc, argv);
-}
+#if !defined(BEGIN_NAMESPACE) && !defined(END_NAMESPACE)
+#define BEGIN_NAMESPACE namespace Circuitling{
+#define END_NAMESPACE };
+#endif
 
-Circuitling::~Circuitling() {
-//DO NOT DESTROY QApplication OBJECT
-//    if (app)
-//        delete app;
-}
+BEGIN_NAMESPACE
 
-void Circuitling::createWorkbench() {
-    Workbench* workbench = new Workbench(this);
-    workbenchList.append(workbench);
-    workbench->show();
-}
+enum ToolType {
+    UnknowType,
+    Cursor,
+    Element
+};
 
-void Circuitling::removeWorkbench(Workbench* workbench){
-    if(workbench){
-        if(workbenchList.removeOne(workbench)){
-            workbench->close();
-            delete workbench;
-        }
-    }
-}
+enum ToolItem {
+    UnknowItem,
+    //cursor
+    SelectCursor,
+    ConnectCursor,
+    MoveCursor,
+    ZoomCursor,
+    //element
+    NodeElement,
+    ResistorElement,
+    CapacitorElement,
+    InductorElement,
+    DiodeElement,
+    DC_VoltageSourceElement,
+    AC_VoltageSourceElement,
+};
 
-int Circuitling::exec() {
-    if (app) {
-        createWorkbench();
-        return app->exec();
-    }
-    return -1;
-}
+enum ElementType {
+    CustomizedElement,
+    Node,
+    DC_VoltageSource,
+    AC_VoltageSource,
+    Resistor,
+    VolatageSource,
+    CurrentSource,
+    Capacitor,
+    Inductor,
+    Diode
+};
 
-void Circuitling::quit() {
-    if (app)
-        app->quit();
-}
+END_NAMESPACE
 
-void Circuitling::showPreferences(){
-    if(!prefDialog)
-        prefDialog = new PreferencesDialog();
-    prefDialog->exec();
-}
-
-void Circuitling::showAbout(){
-    QMessageBox::about(0, tr("About"), tr("Circuitling\nA free tool to design and simulate circuits ;)"));
-}
+#endif

@@ -30,10 +30,10 @@
  * 
  * authors:Xu Waycell
  */
-#include "circuitling.h"
+#include "circuitlingapplication.h"
 
 int main(int argc, char** argv) {
-    Circuitling app(argc, argv);
+    CircuitlingApplication app(argc, argv);
     return app.exec();
 }
 

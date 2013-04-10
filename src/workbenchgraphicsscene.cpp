@@ -30,35 +30,41 @@
  * 
  * authors:Xu Waycell
  */
-#ifndef WORKBENCH_H
-#define WORKBENCH_H
+#include "workbenchgraphicsscene.h"
+#include <QPainter>
 
-#include <QObject>
+WorkbenchElementGraphicsItem::WorkbenchElementGraphicsItem(QGraphicsItem* parent) : QGraphicsItem(parent) {
+}
 
-class CircuitlingApplication;
-class Circuit;
-class WorkbenchWindow;
+WorkbenchElementGraphicsItem::~WorkbenchElementGraphicsItem() {
+}
 
-class Workbench : public QObject {
-    Q_OBJECT
-signals:
-    void closed(Workbench*);
-public slots:
-    void openFile();
-    void exportTo();
-    void save();
-    void saveAs();
-    void close();
-    
-    void addItemToScene(qreal x, qreal y);
-public:
-    explicit Workbench(CircuitlingApplication* parent);
-    ~Workbench();
+WorkbenchConnectionGraphicsItem::WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA, WorkbenchElementGraphicsItem* _elementB, QGraphicsItem* parent) : QGraphicsItem(parent), elementA(_elementA), elementB(_elementB) {
+}
 
-    void show();
-private:
-    Circuit* circuit;
-    WorkbenchWindow* window;
-};
+WorkbenchConnectionGraphicsItem::~WorkbenchConnectionGraphicsItem() {
+    if(elementA)
+        elementA->removeConnection(this);
+    if(elementB)
+        elementB->removeConnection(this);
+}
 
-#endif
+void WorkbenchConnectionGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    if(painter && elementA && elementB){
+        painter->drawLine(elementA->pos(), elementB->pos());
+    }
+}
+
+WorkbenchGraphicsScene::WorkbenchGraphicsScene(QObject* parent) : QGraphicsScene(parent) {
+}
+
+WorkbenchGraphicsScene::~WorkbenchGraphicsScene() {
+}
+
+void WorkbenchGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
+    if (event) {
+    }
+    return QGraphicsScene::mousePressEvent(event);
+}

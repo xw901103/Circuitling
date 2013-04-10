@@ -30,33 +30,28 @@
  * 
  * authors:Xu Waycell
  */
-#ifndef CIRCUITLING_H
-#define CIRCUITLING_H
+#ifndef TOOLBOXDOCKWIDGET_H
+#define	TOOLBOXDOCKWIDGET_H
 
-#include <QApplication>
-#include <QList>
+#include "global.h"
+#include <QDockWidget>
 
-class Workbench;
-class PreferencesDialog;
+class ToolListWidget;
 
-class Circuitling : public QObject {
+class ToolBoxDockWidget : public QDockWidget{
     Q_OBJECT
-public slots:
-    void createWorkbench();
-    void removeWorkbench(Workbench*);
-    void quit();
-    void showPreferences();
-    void showAbout();
 public:
-    explicit Circuitling(int argc, char** argv);
-    ~Circuitling();
-
-    int exec();
+    explicit ToolBoxDockWidget(QWidget* parent = 0);
+    ~ToolBoxDockWidget();
+    
+    Circuitling::ToolItem getCursorToolItem() const;
+    void setCursorToolItem(Circuitling::ToolItem);
+    
+    Circuitling::ToolItem getElementToolItem() const;
+    void setElementToolItem(Circuitling::ToolItem);
 private:
-    QApplication* app;
-    PreferencesDialog* prefDialog;
-    QList<Workbench*> workbenchList;    
+    ToolListWidget* cursorListWidget;
+    ToolListWidget* elementListWidget;
 };
 
 #endif
-

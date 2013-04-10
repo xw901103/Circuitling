@@ -32,6 +32,14 @@
  */
 #include "toollistwidget.h"
 
+ToolListItem::ToolListItem(const QPixmap& icon, const QString& toolTip, ToolListWidget* parent) : QListWidgetItem(parent), toolType(Circuitling::UnknowType), toolItem(Circuitling::UnknowItem){
+    setIcon(icon);
+    setToolTip(toolTip);
+}
+
+ToolListItem::~ToolListItem() {
+}
+
 ToolListWidget::ToolListWidget(QWidget* parent) : QListWidget(parent) {
     setUniformItemSizes(true);
     setResizeMode(QListView::Adjust);
@@ -47,13 +55,6 @@ ToolListWidget::ToolListWidget(QWidget* parent) : QListWidget(parent) {
 ToolListWidget::~ToolListWidget() {
 }
 
-void ToolListWidget::addItem(const QPixmap& icon, const QString& toolTip) {
-    QListWidgetItem* item = new QListWidgetItem(this);
-    item->setIcon(icon);
-    item->setToolTip(toolTip);
-    QListWidget::addItem(item);
-}
-
-void ToolListWidget::addItem(const QString& label) {
-    QListWidget::addItem(label);
+void ToolListWidget::addItem(ToolListItem* item) {
+    QListWidget::addItem(static_cast<QListWidgetItem*> (item));
 }

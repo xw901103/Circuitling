@@ -32,7 +32,7 @@
  */
 #include "workbenchwindow.h"
 #include "workbenchgraphicsview.h"
-#include "toollistwidget.h"
+#include "toolboxdockwidget.h"
 #include <QtGui>
 
 WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
@@ -44,6 +44,9 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 , saveAsAct(0)
 , closeWorkbenchAct(0)
 , quitAct(0)
+, editMenu(0)
+, undoAct(0)
+, redoAct(0)
 , toolsMenu(0)
 , showPrefAct(0)
 , helpMenu(0)
@@ -98,6 +101,18 @@ void WorkbenchWindow::initializeMenus() {
     fileMenu->addSeparator();    
     fileMenu->addAction(closeWorkbenchAct);
     fileMenu->addAction(quitAct);
+    
+    editMenu = new QMenu(this);
+    editMenu->setTitle(tr("Edit"));
+    
+    undoAct = new QAction(this);
+    undoAct->setText(tr("Undo"));
+    
+    redoAct = new QAction(this);
+    redoAct->setText(tr("Redo"));
+    
+    editMenu->addAction(undoAct);
+    editMenu->addAction(redoAct);
 
     toolsMenu = new QMenu(this);
     toolsMenu->setTitle(tr("Tools"));
@@ -118,54 +133,13 @@ void WorkbenchWindow::initializeMenus() {
     helpMenu->addAction(showAboutAct);
 
     menuBar()->addMenu(fileMenu);
+    menuBar()->addMenu(editMenu);
     menuBar()->addMenu(toolsMenu);
     menuBar()->addMenu(helpMenu);
 }
 
 void WorkbenchWindow::initializeToolBox() {
-    toolBoxDock = new QDockWidget(this);
-    toolBoxDock->setWindowTitle(tr("ToolBox"));
-    toolBoxDock->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
-    toolBoxDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-    QWidget* toolBoxWidget = new QWidget(toolBoxDock);
-    QVBoxLayout* toolBoxLayout = new QVBoxLayout(toolBoxWidget);
-    toolBoxWidget->setLayout(toolBoxLayout);
-
-    QGroupBox* cursorBox = new QGroupBox(toolBoxWidget);
-    cursorBox->setTitle(tr("Cursor"));
-    QVBoxLayout* cursorBoxLayout = new QVBoxLayout(cursorBox);
-    cursorBox->setLayout(cursorBoxLayout);
-    ToolListWidget* cursorListWidget = new ToolListWidget(toolBoxWidget);
-    //cursor items for test begin
-    cursorListWidget->addItem(QPixmap(":/resources/cursors/arrow.png"), tr("Select"));
-    cursorListWidget->addItem(QPixmap(":/resources/cursors/hand1.png"), tr("Move"));
-    cursorListWidget->addItem(QPixmap(":/resources/cursors/cross.png"), tr("Connect"));
-    cursorListWidget->addItem(QPixmap(":/resources/cursors/zoom.png"), tr("Zoom"));
-    //cursor items for test end
-    cursorBoxLayout->addWidget(cursorListWidget);
-
-    QGroupBox* elementBox = new QGroupBox(toolBoxWidget);
-    elementBox->setTitle(tr("Element"));
-    QVBoxLayout* elementBoxLayout = new QVBoxLayout(elementBox);
-    elementBox->setLayout(elementBoxLayout);
-    ToolListWidget* elementListWidget = new ToolListWidget(toolBoxWidget);
-    //element items for test begin
-    elementListWidget->addItem(QPixmap(":/resources/elements/dc_voltage_source.png"), tr("DC Voltage Source"));
-    elementListWidget->addItem(QPixmap(":/resources/elements/ac_voltage_source.png"), tr("AC Voltage Source"));
-    elementListWidget->addItem(QPixmap(":/resources/elements/resistor.png"), tr("Resistor"));
-    elementListWidget->addItem(QPixmap(":/resources/elements/capacitor.png"), tr("Capacitor"));
-    elementListWidget->addItem(QPixmap(":/resources/elements/inductor.png"), tr("Inductor"));
-    elementListWidget->addItem(QPixmap(":/resources/elements/diode.png"), tr("Diode"));
-    //element items for test end
-    elementBoxLayout->addWidget(elementListWidget);
-    
-    toolBoxLayout->addWidget(cursorBox);
-    toolBoxLayout->addWidget(elementBox);
-    QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    toolBoxLayout->addItem(verticalSpacer);
-    toolBoxDock->setWidget(toolBoxWidget);
-
+    toolBoxDock = new ToolBoxDockWidget(this);
 
     addDockWidget(static_cast<Qt::DockWidgetArea> (1), toolBoxDock);
 }

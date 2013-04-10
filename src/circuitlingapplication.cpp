@@ -30,35 +30,55 @@
  * 
  * authors:Xu Waycell
  */
-#ifndef WORKBENCH_H
-#define WORKBENCH_H
+#include "circuitlingapplication.h"
+#include "preferencesdialog.h"
+#include "workbench.h"
+#include <QMessageBox>
 
-#include <QObject>
+CircuitlingApplication::CircuitlingApplication(int argc, char** argv) : QObject(0), app(0), prefDialog(0) {
+    app = new QApplication(argc, argv);
+}
 
-class CircuitlingApplication;
-class Circuit;
-class WorkbenchWindow;
+CircuitlingApplication::~CircuitlingApplication() {
+//DO NOT DESTROY QApplication OBJECT
+//    if (app)
+//        delete app;
+}
 
-class Workbench : public QObject {
-    Q_OBJECT
-signals:
-    void closed(Workbench*);
-public slots:
-    void openFile();
-    void exportTo();
-    void save();
-    void saveAs();
-    void close();
-    
-    void addItemToScene(qreal x, qreal y);
-public:
-    explicit Workbench(CircuitlingApplication* parent);
-    ~Workbench();
+void CircuitlingApplication::createWorkbench() {
+    Workbench* workbench = new Workbench(this);
+    workbenchList.append(workbench);
+    workbench->show();
+}
 
-    void show();
-private:
-    Circuit* circuit;
-    WorkbenchWindow* window;
-};
+void CircuitlingApplication::removeWorkbench(Workbench* workbench){
+    if(workbench){
+        if(workbenchList.removeOne(workbench)){
+            workbench->close();
+            delete workbench;
+        }
+    }
+}
 
-#endif
+int CircuitlingApplication::exec() {
+    if (app) {
+        createWorkbench();
+        return app->exec();
+    }
+    return -1;
+}
+
+void CircuitlingApplication::quit() {
+    if (app)
+        app->quit();
+}
+
+void CircuitlingApplication::showPreferences(){
+    if(!prefDialog)
+        prefDialog = new PreferencesDialog();
+    prefDialog->exec();
+}
+
+void CircuitlingApplication::showAbout(){
+    QMessageBox::about(0, tr("About"), tr("Circuitling\nA free tool to design and simulate circuits ;)"));
+}

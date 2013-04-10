@@ -32,6 +32,8 @@
  */
 #include "preferencesdialog.h"
 
-PreferencesDialog::PreferencesDialog(QWidget* parent):QDialog(parent){}
+PreferencesDialog::PreferencesDialog(QWidget* parent):QDialog(parent){
+    setWindowTitle(tr("Preferences"));
+}
 
 PreferencesDialog::~PreferencesDialog(){}
