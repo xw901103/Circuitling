@@ -32,7 +32,6 @@
  */
 #include "workbenchwindow.h"
 #include "workbenchgraphicsview.h"
-#include "toolboxdockwidget.h"
 #include <QtGui>
 
 WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
@@ -51,10 +50,8 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 , showPrefAct(0)
 , helpMenu(0)
 , showAboutAct(0)
-, view(0)
-, toolBoxDock(0) {
+, view(0) {
     initializeMenus();
-    initializeToolBox();
 
     setWindowTitle(tr("Circuitling - Workbench"));
 
@@ -136,10 +133,4 @@ void WorkbenchWindow::initializeMenus() {
     menuBar()->addMenu(editMenu);
     menuBar()->addMenu(toolsMenu);
     menuBar()->addMenu(helpMenu);
-}
-
-void WorkbenchWindow::initializeToolBox() {
-    toolBoxDock = new ToolBoxDockWidget(this);
-
-    addDockWidget(static_cast<Qt::DockWidgetArea> (1), toolBoxDock);
 }

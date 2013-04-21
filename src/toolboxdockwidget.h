@@ -36,17 +36,23 @@
 #include "global.h"
 #include <QDockWidget>
 
+class QListWidgetItem;
 class ToolListWidget;
 
-class ToolBoxDockWidget : public QDockWidget{
+class ToolBoxDockWidget : public QDockWidget {
     Q_OBJECT
+signals:
+    void toolItemActivated(Circuitling::ToolItem);
+private slots:
+    void processToolItemChange(QListWidgetItem*);
 public:
     explicit ToolBoxDockWidget(QWidget* parent = 0);
     ~ToolBoxDockWidget();
-    
+
     Circuitling::ToolItem getCursorToolItem() const;
     void setCursorToolItem(Circuitling::ToolItem);
-    
+
+    void resetElementTool();    
     Circuitling::ToolItem getElementToolItem() const;
     void setElementToolItem(Circuitling::ToolItem);
 private:

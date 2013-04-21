@@ -35,7 +35,6 @@
 
 #include <QMainWindow>
 
-class ToolBoxDockWidget;
 class WorkbenchGraphicsView;
 
 class WorkbenchWindow : public QMainWindow {
@@ -56,10 +55,8 @@ public:
     inline QAction* showPreferencesAction(){return showPrefAct;}
     inline QAction* showAboutAction() const{return showAboutAct;}
     inline WorkbenchGraphicsView* graphicsView() const{return view;}
-    inline ToolBoxDockWidget* toolBox() const{return toolBoxDock;}
 private:
     void initializeMenus();
-    void initializeToolBox();
     
     QMenu* fileMenu;
     QAction* newWorkbenchAct;
@@ -78,7 +75,6 @@ private:
     QAction* showAboutAct;
     
     WorkbenchGraphicsView* view;
-    ToolBoxDockWidget* toolBoxDock;
 };
 
 #endif

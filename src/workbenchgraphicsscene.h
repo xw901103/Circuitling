@@ -37,64 +37,12 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 
+class WorkbenchElementGraphicsItem;
 class WorkbenchConnectionGraphicsItem;
-
-class WorkbenchElementGraphicsItem : public QGraphicsItem {
-    QString uuid;
-    QList<WorkbenchConnectionGraphicsItem*> connectionList;
-public:
-    explicit WorkbenchElementGraphicsItem(QGraphicsItem* parent = 0);
-    ~WorkbenchElementGraphicsItem();
-
-    inline QString getUUID() const {
-        return uuid;
-    }
-
-    inline void setUUID(const QString& _uuid) {
-        uuid = _uuid;
-    }
-    
-    inline void appendConnection(WorkbenchConnectionGraphicsItem* _connection){connectionList.append(_connection);}
-    inline void removeConnection(WorkbenchConnectionGraphicsItem* _connection){connectionList.removeAll(_connection);}
-};
-
-class WorkbenchConnectionGraphicsItem : public QGraphicsItem {
-    QString uuid;
-    WorkbenchElementGraphicsItem* elementA;
-    WorkbenchElementGraphicsItem* elementB;    
-public:
-    explicit WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA, WorkbenchElementGraphicsItem* _elementB, QGraphicsItem* parent = 0);
-    ~WorkbenchConnectionGraphicsItem();
-
-    inline QString getUUID() const {
-        return uuid;
-    }
-
-    inline void setUUID(const QString& _uuid) {
-        uuid = _uuid;
-    }
-
-    inline WorkbenchElementGraphicsItem* getElementA() const {
-        return elementA;
-    }
-
-    inline void setElementA(WorkbenchElementGraphicsItem* _elementA) {
-        elementA = _elementA;
-    }
-
-    inline WorkbenchElementGraphicsItem* getElementB() const {
-        return elementA;
-    }
-
-    inline void setElementB(WorkbenchElementGraphicsItem* _elementB) {
-        elementB = _elementB;
-    }
-
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
-};
 
 class WorkbenchGraphicsScene : public QGraphicsScene {
     Q_OBJECT
+    friend class WorkbenchGraphicsView;
 public:
     explicit WorkbenchGraphicsScene(QObject* parent = 0);
     ~WorkbenchGraphicsScene();
@@ -103,6 +51,7 @@ public:
     void addConnection(WorkbenchConnectionGraphicsItem*);
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent*);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent*);
 };
 
 #endif

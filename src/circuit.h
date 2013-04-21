@@ -87,8 +87,8 @@ private:
     QMap<QString, Connection> connectionMap;
     QString uuid;
     QString title;
-    qreal x;
-    qreal y;
+//    qreal x;
+//    qreal y;
 };
 
 class Circuit::Element {

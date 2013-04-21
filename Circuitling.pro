@@ -16,18 +16,25 @@ TRANSLATIONS = 	./locale/Circuitling_en.ts \
 QT += xml
 # Input
 HEADERS += src/circuit.h \
-           src/circuitling.h \
+           src/global.h \
+           src/circuitlingapplication.h \
            src/preferencesdialog.h \
            src/toollistwidget.h \
+           src/toolboxdockwidget.h \
     	   src/workbenchwindow.h \
+           src/workbenchgraphicsitem.h \
+           src/workbenchgraphicsscene.h \
            src/workbenchgraphicsview.h \
 	       src/workbench.h
 SOURCES += src/circuit.cpp \
-    	   src/circuitling.cpp \
+    	   src/circuitlingapplication.cpp \
 	       src/main.cpp \
            src/preferencesdialog.cpp \
            src/toollistwidget.cpp \
+           src/toolboxdockwidget.cpp \
     	   src/workbenchwindow.cpp \
+           src/workbenchgraphicsitem.cpp \
+           src/workbenchgraphicsscene.cpp \
            src/workbenchgraphicsview.cpp \
     	   src/workbench.cpp
 RESOURCES += "Circuitling.qrc"

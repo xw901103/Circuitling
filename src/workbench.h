@@ -33,11 +33,16 @@
 #ifndef WORKBENCH_H
 #define WORKBENCH_H
 
+#include "global.h"
 #include <QObject>
 
 class CircuitlingApplication;
 class Circuit;
 class WorkbenchWindow;
+class ToolBoxDockWidget;
+
+class QGraphicsItem;
+class WorkbenchConnectionGraphicsItem;
 
 class Workbench : public QObject {
     Q_OBJECT
@@ -51,14 +56,22 @@ public slots:
     void close();
     
     void addItemToScene(qreal x, qreal y);
+    void processClickedItem(QGraphicsItem*);
+
+    void activateTool(Circuitling::ToolItem);
 public:
     explicit Workbench(CircuitlingApplication* parent);
     ~Workbench();
 
     void show();
 private:
+    void initializeToolBox();
+
     Circuit* circuit;
     WorkbenchWindow* window;
+    ToolBoxDockWidget* toolBoxDock;
+    
+    WorkbenchConnectionGraphicsItem* currentConnectionItem;
 };
 
 #endif

@@ -40,22 +40,51 @@ WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(pa
     refreshAct->setText(tr("Refresh"));
     addAction(refreshAct);
     setContextMenuPolicy(Qt::ActionsContextMenu);
+    setDragMode(QGraphicsView::RubberBandDrag);
 
     setScene(new WorkbenchGraphicsScene(this));
     //for test reason, we set it to 800x600 with white background
     scene()->setSceneRect(0, 0, 800, 600);
+//    scene()->setForegroundBrush(Qt::gray);
     scene()->setBackgroundBrush(Qt::white);
-//    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-
+    //setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    //setCacheMode(QGraphicsView::CacheNone);
+//  setBackgroundBrush(Qt::NoBrush);
     scene()->addText(tr("Workbench Graphics View"), scene()->font());
+//    scene()->addRect(0,0,800,600);
 }
 
 WorkbenchGraphicsView::~WorkbenchGraphicsView() {
 }
 
+void WorkbenchGraphicsView::drawBackground(QPainter* painter, const QRectF& rect){
+//     qDebug(QString("GraphicsView background x:%1 y:%2 w:%3 h:%4").arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()).toAscii());
+//    Q_UNUSED(painter)
+//    Q_UNUSED(rect);
+//    painter->fillRect(rect, backgroundBrush());
+//    if(scene())
+//        scene()->drawBackground(painter, rect);
+    QGraphicsView::drawBackground(painter, rect);
+}
+
 void WorkbenchGraphicsView::mousePressEvent(QMouseEvent* event) {
     if (event) {
-        emit sceneClicked(event->x(), event->y());
+        QGraphicsItem* item = itemAt(event->pos());
+        switch (event->button()) {
+            case Qt::LeftButton:
+                if(item == 0){
+//                    qDebug("void WorkbenchGraphicsView::mousePressEvent(QMouseEvent*) - emit sceneClicked");
+                    emit sceneClicked(event->x(), event->y());
+                } else {
+//                    qDebug("void WorkbenchGraphicsView::mousePressEvent(QMouseEvent*) - emit itemClicked");
+                    emit itemClicked(item);
+                }
+                break;
+            case Qt::RightButton:
+                break;
+            default:
+                break;
+        }
     }
     return QGraphicsView::mousePressEvent(event);
 }

@@ -7,6 +7,7 @@
         <file>resources/cursors/hand2.png</file>
         <file>resources/cursors/zoom.png</file>
 
+        <file>resources/elements/node.png</file>
         <file>resources/elements/dc_voltage_source.png</file>
         <file>resources/elements/ac_voltage_source.png</file>
         <file>resources/elements/resistor.png</file>

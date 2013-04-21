@@ -33,30 +33,6 @@
 #include "workbenchgraphicsscene.h"
 #include <QPainter>
 
-WorkbenchElementGraphicsItem::WorkbenchElementGraphicsItem(QGraphicsItem* parent) : QGraphicsItem(parent) {
-}
-
-WorkbenchElementGraphicsItem::~WorkbenchElementGraphicsItem() {
-}
-
-WorkbenchConnectionGraphicsItem::WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA, WorkbenchElementGraphicsItem* _elementB, QGraphicsItem* parent) : QGraphicsItem(parent), elementA(_elementA), elementB(_elementB) {
-}
-
-WorkbenchConnectionGraphicsItem::~WorkbenchConnectionGraphicsItem() {
-    if(elementA)
-        elementA->removeConnection(this);
-    if(elementB)
-        elementB->removeConnection(this);
-}
-
-void WorkbenchConnectionGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-    if(painter && elementA && elementB){
-        painter->drawLine(elementA->pos(), elementB->pos());
-    }
-}
-
 WorkbenchGraphicsScene::WorkbenchGraphicsScene(QObject* parent) : QGraphicsScene(parent) {
 }
 
@@ -65,6 +41,12 @@ WorkbenchGraphicsScene::~WorkbenchGraphicsScene() {
 
 void WorkbenchGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     if (event) {
+        return QGraphicsScene::mousePressEvent(event);
     }
-    return QGraphicsScene::mousePressEvent(event);
+}
+
+void WorkbenchGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
+    if(event){
+        return QGraphicsScene::mouseMoveEvent(event);
+    }
 }

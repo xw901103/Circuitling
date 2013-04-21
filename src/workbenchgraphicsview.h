@@ -38,14 +38,16 @@
 class QMenu;
 class QAction;
 
-class WorkbenchGraphicsView:public QGraphicsView{
+class WorkbenchGraphicsView : public QGraphicsView {
     Q_OBJECT
 signals:
     void sceneClicked(qreal x, qreal y);
+    void itemClicked(QGraphicsItem*);
 public:
     explicit WorkbenchGraphicsView(QWidget* parent = 0);
     ~WorkbenchGraphicsView();
 protected:
+    void drawBackground(QPainter* painter, const QRectF& rect);
     void mousePressEvent(QMouseEvent*);
 private:
     QAction* refreshAct;
