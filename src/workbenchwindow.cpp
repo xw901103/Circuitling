@@ -35,6 +35,7 @@
 #include <QtGui>
 
 WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
+, closableWindow(true)
 , fileMenu(0)
 , newWorkbenchAct(0)
 , openFileAct(0)
@@ -46,6 +47,12 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 , editMenu(0)
 , undoAct(0)
 , redoAct(0)
+, cutAct(0)
+, copyAct(0)
+, pasteAct(0)
+, delAct(0)
+, workbenchMenu(0)
+, resizeAct(0)
 , toolsMenu(0)
 , showPrefAct(0)
 , helpMenu(0)
@@ -108,8 +115,33 @@ void WorkbenchWindow::initializeMenus() {
     redoAct = new QAction(this);
     redoAct->setText(tr("Redo"));
     
+    cutAct = new QAction(this);
+    cutAct->setText(tr("Cut"));
+
+    copyAct = new QAction(this);
+    copyAct->setText(tr("Copy"));
+    
+    pasteAct = new QAction(this);
+    pasteAct->setText(tr("Paste"));
+    
+    delAct = new QAction(this);
+    delAct->setText(tr("Delete"));
+    
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
+    editMenu->addSeparator();
+    editMenu->addAction(cutAct);
+    editMenu->addAction(copyAct);
+    editMenu->addAction(pasteAct);
+    editMenu->addAction(delAct);
+    
+    workbenchMenu = new QMenu(this);
+    workbenchMenu->setTitle(tr("Workbench"));
+    
+    resizeAct = new QAction(this);
+    resizeAct->setText(tr("Resize"));
+    
+    workbenchMenu->addAction(resizeAct);
 
     toolsMenu = new QMenu(this);
     toolsMenu->setTitle(tr("Tools"));
@@ -131,6 +163,18 @@ void WorkbenchWindow::initializeMenus() {
 
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(editMenu);
+    menuBar()->addMenu(workbenchMenu);
     menuBar()->addMenu(toolsMenu);
     menuBar()->addMenu(helpMenu);
+}
+
+void WorkbenchWindow::closeEvent(QCloseEvent* e){
+    if (e) {
+        if (closableWindow) {
+            e->accept();
+        } else{
+            closeWorkbenchAct->trigger();
+            e->ignore();
+        }
+    }
 }

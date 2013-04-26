@@ -36,6 +36,7 @@
 #include "global.h"
 #include <QDockWidget>
 
+class QListWidget;
 class QListWidgetItem;
 class ToolListWidget;
 
@@ -57,7 +58,8 @@ public:
     void setElementToolItem(Circuitling::ToolItem);
 private:
     ToolListWidget* cursorListWidget;
-    ToolListWidget* elementListWidget;
+//    ToolListWidget* elementListWidget;
+    QListWidget* elementListWidget;
 };
 
 #endif

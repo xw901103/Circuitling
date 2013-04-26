@@ -39,6 +39,10 @@ WorkbenchGraphicsScene::WorkbenchGraphicsScene(QObject* parent) : QGraphicsScene
 WorkbenchGraphicsScene::~WorkbenchGraphicsScene() {
 }
 
+void WorkbenchGraphicsScene::registerItem(const QString & uuid, QGraphicsItem * item){
+    itemMap.insert(uuid, item);
+}
+
 void WorkbenchGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     if (event) {
         return QGraphicsScene::mousePressEvent(event);
@@ -49,4 +53,12 @@ void WorkbenchGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
     if(event){
         return QGraphicsScene::mouseMoveEvent(event);
     }
+}
+
+QGraphicsItem* WorkbenchGraphicsScene::getItemByUUID(const QString & uuid) const{
+    QMap<QString, QGraphicsItem*>::const_iterator iter = itemMap.find(uuid);
+    if(iter != itemMap.end()){
+        return *iter;
+    }
+    return 0;
 }

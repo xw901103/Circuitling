@@ -32,8 +32,9 @@
  */
 #include "workbenchgraphicsitem.h"
 
+#include <QPen>
 
-WorkbenchElementGraphicsItem::WorkbenchElementGraphicsItem(const QPixmap& _pixmap, QGraphicsItem* parent) : QGraphicsPixmapItem(_pixmap, parent){
+WorkbenchElementGraphicsItem::WorkbenchElementGraphicsItem(const QPixmap& _pixmap, QGraphicsItem* parent) : QGraphicsPixmapItem(_pixmap, parent), instance(0){
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
@@ -58,8 +59,9 @@ QVariant WorkbenchElementGraphicsItem::itemChange(QGraphicsItem::GraphicsItemCha
     return ret;
 }
 
-WorkbenchConnectionGraphicsItem::WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA, WorkbenchElementGraphicsItem* _elementB, QGraphicsItem* parent) : QGraphicsLineItem(parent), elementA(_elementA), elementB(_elementB) {
+WorkbenchConnectionGraphicsItem::WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA, WorkbenchElementGraphicsItem* _elementB, QGraphicsItem* parent) : QGraphicsLineItem(parent), instance(0), elementA(_elementA), elementB(_elementB) {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setPen(QPen(Qt::SolidLine));
 }
 
 WorkbenchConnectionGraphicsItem::~WorkbenchConnectionGraphicsItem() {

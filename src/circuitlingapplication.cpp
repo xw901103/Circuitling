@@ -54,7 +54,8 @@ void CircuitlingApplication::createWorkbench() {
 void CircuitlingApplication::removeWorkbench(Workbench* workbench){
     if(workbench){
         if(workbenchList.removeOne(workbench)){
-            workbench->close();
+            if(!workbench->isClosing())
+                workbench->close();
             delete workbench;
         }
     }

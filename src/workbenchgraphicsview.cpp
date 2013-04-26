@@ -47,7 +47,7 @@ WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(pa
     scene()->setSceneRect(0, 0, 800, 600);
 //    scene()->setForegroundBrush(Qt::gray);
     scene()->setBackgroundBrush(Qt::white);
-    //setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     //setCacheMode(QGraphicsView::CacheNone);
 //  setBackgroundBrush(Qt::NoBrush);
     scene()->addText(tr("Workbench Graphics View"), scene()->font());

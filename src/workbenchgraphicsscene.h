@@ -37,15 +37,22 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 
+#include <QMap>
+
 class WorkbenchElementGraphicsItem;
 class WorkbenchConnectionGraphicsItem;
 
 class WorkbenchGraphicsScene : public QGraphicsScene {
     Q_OBJECT
     friend class WorkbenchGraphicsView;
+    
+    QMap<QString, QGraphicsItem*> itemMap;
 public:
     explicit WorkbenchGraphicsScene(QObject* parent = 0);
     ~WorkbenchGraphicsScene();
+    
+    void registerItem(const QString&, QGraphicsItem*);
+    QGraphicsItem* getItemByUUID(const QString&) const;
 
     void addElement(WorkbenchElementGraphicsItem*, qreal x, qreal y);
     void addConnection(WorkbenchConnectionGraphicsItem*);

@@ -1,18 +1,18 @@
 /**
  * Circuitling
- * 
+ *
  * Copyright (c) 2013, Circuitling Project
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer. 
+ * list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution. 
- * 
+ * and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,45 +23,28 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
- * 
+ *
  * authors:Xu Waycell
  */
-#ifndef PREFERENCESDIALOG_H
-#define	PREFERENCESDIALOG_H
+#include "inspectorlistwidget.h"
 
-#include <QDialog>
+#include <QAction>
 
-#include <QComBoBox>
-#include <QSpinBox>
-#include <QLineEdit>
+InspectorListItem::InspectorListItem(const QString& _uuid, QListWidget* parent):QListWidgetItem(parent), uuid(_uuid){
+}
 
-class WorkbenchPage:public QWidget{
-    Q_OBJECT
-public slots:
-    void setWorkbenchSizeUnitSuffix(const QString&);
-    void getAutosavePath();
-public:
-    explicit WorkbenchPage(QWidget* parent = 0);
-    ~WorkbenchPage();
+InspectorListItem::~InspectorListItem(){}
+
+InspectorListWidget::InspectorListWidget(QWidget* parent):QListWidget(parent), rmvAct(0) ,cfgAct(0){
+    setContextMenuPolicy(Qt::ActionsContextMenu);
     
-private:
-    QComboBox* uComboBox;
-    QSpinBox* wSpinBox;
-    QSpinBox* hSpinBox;
-    
-    QLineEdit* pLineEdit;
-};
+    rmvAct = new QAction(tr("Remove"), this);
+    cfgAct = new QAction(tr("Configure"), this);
+}
 
-class PreferencesDialog:public QDialog{
-    Q_OBJECT
-public:
-    explicit PreferencesDialog(QWidget* parent = 0);
-    ~PreferencesDialog();
-private:
-};
-
-#endif
+InspectorListWidget::~InspectorListWidget(){
+}

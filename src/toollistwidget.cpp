@@ -32,8 +32,9 @@
  */
 #include "toollistwidget.h"
 
-ToolListItem::ToolListItem(const QPixmap& icon, const QString& toolTip, ToolListWidget* parent) : QListWidgetItem(parent), toolType(Circuitling::UnknowType), toolItem(Circuitling::UnknowItem){
+ToolListItem::ToolListItem(const QPixmap& icon, const QString& toolTip, QListWidget* parent) : QListWidgetItem(parent), toolType(Circuitling::UnknowType), toolItem(Circuitling::UnknowItem){
     setIcon(icon);
+    setText(toolTip);
     setToolTip(toolTip);
 }
 

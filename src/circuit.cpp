@@ -71,10 +71,10 @@ QDomDocument Circuit::toDomDocument() {
     return doc;
 }
 
-const Circuit::Element* Circuit::getElement(const QString& _uuid) const {
+Circuit::Element* Circuit::getElement(const QString& _uuid) const {
     QMap<QString, Element>::const_iterator iter = elementMap.find(_uuid);
     if (iter != elementMap.end())
-        return &iter.value();
+        return const_cast<Element*>(&iter.value());
     return 0;
 }
 
@@ -88,10 +88,10 @@ void Circuit::delElement(const QString& _uuid) {
     elementMap.remove(_uuid);
 }
 
-const Circuit::Connection* Circuit::getConnection(const QString& _uuid) const {
+Circuit::Connection* Circuit::getConnection(const QString& _uuid) const {
     QMap<QString, Connection>::const_iterator iter = connectionMap.find(_uuid);
     if (iter != connectionMap.end())
-        return &iter.value();
+        return const_cast<Connection*>(&iter.value());
     return 0;
 }
 

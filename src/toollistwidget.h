@@ -40,7 +40,7 @@ class ToolListWidget;
 
 class ToolListItem : public QListWidgetItem {
 public:
-    explicit ToolListItem(const QPixmap& icon, const QString& toolTip, ToolListWidget* parent = 0);
+    explicit ToolListItem(const QPixmap& icon, const QString& toolTip, QListWidget* parent = 0);
     ~ToolListItem();
 
     inline Circuitling::ToolType getToolType() const {

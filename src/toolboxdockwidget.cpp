@@ -73,7 +73,8 @@ ToolBoxDockWidget::ToolBoxDockWidget(QWidget* parent) : QDockWidget(parent) {
     elementBox->setTitle(tr("Element"));
     QVBoxLayout* elementBoxLayout = new QVBoxLayout(elementBox);
     elementBox->setLayout(elementBoxLayout);
-    elementListWidget = new ToolListWidget(toolBoxWidget);
+//    elementListWidget = new ToolListWidget(toolBoxWidget);
+    elementListWidget = new QListWidget(toolBoxWidget);
     //element items for test begin
     ToolListItem* elementItem = 0;
     elementItem = new ToolListItem(QPixmap(":/resources/elements/node"), tr("Node"), elementListWidget);

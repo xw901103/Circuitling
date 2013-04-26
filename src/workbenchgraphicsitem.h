@@ -34,6 +34,7 @@
 #define	WORKBENCHGRAPHICSITEM_H
 
 #include <QGraphicsItem>
+#include "circuit.h"
 
 class WorkbenchElementGraphicsItem;
 class WorkbenchConnectionGraphicsItem;
@@ -41,10 +42,18 @@ class WorkbenchConnectionGraphicsItem;
 class WorkbenchElementGraphicsItem : public QGraphicsPixmapItem {
     QString uuid;
 //    QPixmap pixmap;
+    Circuit::Element* instance;
     QList<WorkbenchConnectionGraphicsItem*> connectionList;
 public:
     explicit WorkbenchElementGraphicsItem(const QPixmap&, QGraphicsItem* parent = 0);
     ~WorkbenchElementGraphicsItem();
+
+    inline Circuit::Element* getInstance() const{return instance;}
+    inline void setInstance(Circuit::Element* _instance){
+        instance = _instance;
+        if(instance)
+            uuid = instance->getUUID();
+    }
     
     inline QString getUUID() const {
         return uuid;
@@ -69,11 +78,19 @@ protected:
 
 class WorkbenchConnectionGraphicsItem : public QGraphicsLineItem {
     QString uuid;
+    Circuit::Connection* instance; //point to a existing connection
     WorkbenchElementGraphicsItem* elementA;
     WorkbenchElementGraphicsItem* elementB;
 public:
     explicit WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA = 0, WorkbenchElementGraphicsItem* _elementB = 0, QGraphicsItem* parent = 0);
     ~WorkbenchConnectionGraphicsItem();
+    
+    inline Circuit::Connection* getInstance() const{return instance;}
+    inline void setInstance(Circuit::Connection* _instance){
+        instance = _instance;
+        if(instance)
+            uuid = instance->getUUID();
+    }
     
     inline QString getUUID() const {
         return uuid;

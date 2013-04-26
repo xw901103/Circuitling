@@ -55,8 +55,17 @@ public:
     inline QAction* showPreferencesAction(){return showPrefAct;}
     inline QAction* showAboutAction() const{return showAboutAct;}
     inline WorkbenchGraphicsView* graphicsView() const{return view;}
+    
+    inline void setClosableWindow(bool _closableWindow){
+        closableWindow = _closableWindow;
+    }
+    inline bool isClosable() const{return closableWindow;}
+protected:
+    void closeEvent(QCloseEvent*);
 private:
     void initializeMenus();
+    
+    bool closableWindow;
     
     QMenu* fileMenu;
     QAction* newWorkbenchAct;
@@ -69,6 +78,12 @@ private:
     QMenu* editMenu;
     QAction* undoAct;
     QAction* redoAct;
+    QAction* cutAct;
+    QAction* copyAct;
+    QAction* pasteAct;
+    QAction* delAct;
+    QMenu* workbenchMenu;
+    QAction* resizeAct;
     QMenu* toolsMenu;
     QAction* showPrefAct;
     QMenu* helpMenu;

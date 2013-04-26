@@ -31,9 +31,122 @@
  * authors:Xu Waycell
  */
 #include "preferencesdialog.h"
+#include <QVBoxLayout>
+#include <QTabWidget>
+#include <QDialogButtonBox>
+
+#include <QGroupBox>
+#include <QFormLayout>
+#include <QLabel>
+#include <QToolButton>
+
+#include <QFileDialog>
+
+class GeneralPage:public QWidget{
+public:
+    explicit GeneralPage(QWidget* parent = 0);
+    ~GeneralPage();
+};
+
+GeneralPage::GeneralPage(QWidget* parent):QWidget(parent){}
+
+GeneralPage::~GeneralPage(){}
+
+WorkbenchPage::WorkbenchPage(QWidget* parent):QWidget(parent), uComboBox(0), wSpinBox(0), hSpinBox(0), pLineEdit(0){
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    setLayout(mainLayout);
+
+    QGroupBox* defaultSizeGroupBox = new QGroupBox(tr("Default Size"), this);
+    QFormLayout* defaultSizeLayout = new QFormLayout(defaultSizeGroupBox);
+    defaultSizeGroupBox->setLayout(defaultSizeLayout);
+    QLabel* uLabel = new QLabel(tr("Unit:"), this);
+    QLabel* wLabel = new QLabel(tr("Width:"), this);
+    QLabel* hLabel = new QLabel(tr("Height:"), this);
+    uComboBox = new QComboBox(this);
+    uComboBox->addItem(tr("Pixel"));
+    uComboBox->addItem(tr("Millimeter"));
+    uComboBox->addItem(tr("Centimeter"));
+    uComboBox->addItem(tr("Meter"));
+    uComboBox->addItem(tr("Inch"));
+    connect(uComboBox, SIGNAL(activated(const QString&)), this, SLOT(setWorkbenchSizeUnitSuffix(const QString&)));
+    wSpinBox = new QSpinBox(this);
+    hSpinBox = new QSpinBox(this);
+    defaultSizeLayout->setWidget(0, QFormLayout::LabelRole, uLabel);
+    defaultSizeLayout->setWidget(0, QFormLayout::FieldRole, uComboBox);
+    defaultSizeLayout->setWidget(1, QFormLayout::LabelRole, wLabel);
+    defaultSizeLayout->setWidget(1, QFormLayout::FieldRole, wSpinBox);
+    defaultSizeLayout->setWidget(2, QFormLayout::LabelRole, hLabel);
+    defaultSizeLayout->setWidget(2, QFormLayout::FieldRole, hSpinBox);
+    
+    mainLayout->addWidget(defaultSizeGroupBox);
+    
+    QGroupBox* autosaveGroupBox = new QGroupBox(tr("Autosave"), this);
+    autosaveGroupBox->setCheckable(true);
+    QFormLayout* autosaveLayout = new QFormLayout(autosaveGroupBox);
+    autosaveGroupBox->setLayout(autosaveLayout);
+    QLabel* pLabel = new QLabel(tr("Path:"), this);
+    pLineEdit = new QLineEdit(this);
+    QToolButton* pToolButton = new QToolButton(this);
+    pToolButton->setText(tr("..."));
+    connect(pToolButton, SIGNAL(clicked()), this, SLOT(getAutosavePath()));
+    QHBoxLayout* pLayout = new QHBoxLayout();
+    pLayout->addWidget(pLineEdit);
+    pLayout->addWidget(pToolButton);
+    autosaveLayout->setWidget(0, QFormLayout::LabelRole, pLabel);
+    autosaveLayout->setLayout(0, QFormLayout::FieldRole, pLayout);
+//    autosaveLayout->setWidget(0, QFormLayout::FieldRole, pLineEdit);
+    
+    mainLayout->addWidget(autosaveGroupBox);
+}
+
+WorkbenchPage::~WorkbenchPage(){}
+
+void WorkbenchPage::setWorkbenchSizeUnitSuffix(const QString& unit){
+    if(wSpinBox || hSpinBox){
+        QString suffix;
+        if(unit == "Pixel")
+            suffix = QString("px");
+        else if(unit == "Millimeter")
+            suffix = QString("mm");
+        else if(unit == "Centimeter")
+            suffix = QString("cm");
+        else if(unit == "Meter")
+            suffix = QString("m");
+        else if(unit == "Inch")
+            suffix = QString("\"");
+        if(wSpinBox)
+            wSpinBox->setSuffix(suffix);
+        if(hSpinBox)
+            hSpinBox->setSuffix(suffix);
+    }
+}
+
+void WorkbenchPage::getAutosavePath(){
+    QString path = QFileDialog::getExistingDirectory();
+    if(pLineEdit)
+        pLineEdit->setText(path);
+}
 
 PreferencesDialog::PreferencesDialog(QWidget* parent):QDialog(parent){
     setWindowTitle(tr("Preferences"));
+    
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    setLayout(mainLayout);
+    
+    GeneralPage* generalPage = new GeneralPage(this);
+    WorkbenchPage* workbenchPage = new WorkbenchPage(this);
+    
+    QTabWidget* tabWidget = new QTabWidget(this);
+    tabWidget->addTab(generalPage, tr("General"));
+    tabWidget->addTab(workbenchPage, tr("Workbench"));
+    
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
+    buttonBox->setStandardButtons(QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::RestoreDefaults);
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    
+    mainLayout->addWidget(tabWidget);
+    mainLayout->addWidget(buttonBox);
 }
 
 PreferencesDialog::~PreferencesDialog(){}

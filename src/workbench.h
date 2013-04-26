@@ -40,6 +40,7 @@ class CircuitlingApplication;
 class Circuit;
 class WorkbenchWindow;
 class ToolBoxDockWidget;
+class InspectorDockWidget;
 
 class QGraphicsItem;
 class WorkbenchConnectionGraphicsItem;
@@ -59,17 +60,24 @@ public slots:
     void processClickedItem(QGraphicsItem*);
 
     void activateTool(Circuitling::ToolItem);
+    
+    void inspectSceneItem(const QString&);
 public:
     explicit Workbench(CircuitlingApplication* parent);
     ~Workbench();
 
     void show();
+    
+    inline bool isClosing() const{return closing;}
 private:
-    void initializeToolBox();
+    void initializeDocks();
+    
+    bool closing;
 
     Circuit* circuit;
     WorkbenchWindow* window;
     ToolBoxDockWidget* toolBoxDock;
+    InspectorDockWidget* inspectorDock;
     
     WorkbenchConnectionGraphicsItem* currentConnectionItem;
 };

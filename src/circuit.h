@@ -46,7 +46,7 @@ public:
     Circuit();
     ~Circuit();
 
-    const Element* getElement(const QString& uuid) const;
+    Element* getElement(const QString& uuid) const;
     /**
      * add a new element then return its uuid.
      * @param _element element
@@ -55,7 +55,7 @@ public:
     QString addElement(const Element& _element);
     void delElement(const QString& _uuid);
 
-    const Connection* getConnection(const QString& uuid) const;
+    Connection* getConnection(const QString& uuid) const;
     /**
      * add a new connection then return its uuid.
      * @param _connection connection
@@ -160,6 +160,12 @@ public:
 
     bool operator==(const Connection&) const;
     bool operator!=(const Connection&) const;
+    
+    inline Element* getConnectedElement(Element* element) const{
+        if(element == elementA || element == elementB)
+            return element == elementA ? elementB : elementA;
+        return 0;
+    }
 
     inline Element* getElementA() const {
         return elementA;
@@ -175,6 +181,10 @@ public:
 
     inline void setElementB(Element* _b) {
         elementB = _b;
+    }
+    
+    inline bool isValid() const{
+        return elementA && elementB;
     }
 
     inline QString getUUID() const {

@@ -20,7 +20,9 @@ HEADERS += src/circuit.h \
            src/circuitlingapplication.h \
            src/preferencesdialog.h \
            src/toollistwidget.h \
+           src/inspectorlistwidget.h \
            src/toolboxdockwidget.h \
+           src/inspectordockwidget.h \
     	   src/workbenchwindow.h \
            src/workbenchgraphicsitem.h \
            src/workbenchgraphicsscene.h \
@@ -31,7 +33,9 @@ SOURCES += src/circuit.cpp \
 	       src/main.cpp \
            src/preferencesdialog.cpp \
            src/toollistwidget.cpp \
+           src/inspectorlistwidget.cpp \
            src/toolboxdockwidget.cpp \
+           src/inspectordockwidget.cpp \
     	   src/workbenchwindow.cpp \
            src/workbenchgraphicsitem.cpp \
            src/workbenchgraphicsscene.cpp \

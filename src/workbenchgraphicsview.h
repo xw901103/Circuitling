@@ -46,6 +46,8 @@ signals:
 public:
     explicit WorkbenchGraphicsView(QWidget* parent = 0);
     ~WorkbenchGraphicsView();
+    
+    inline QAction* refreshAction() const{return refreshAct;}
 protected:
     void drawBackground(QPainter* painter, const QRectF& rect);
     void mousePressEvent(QMouseEvent*);
