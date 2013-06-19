@@ -8,11 +8,11 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += . src
 INCLUDEPATH += . src
-TRANSLATIONS = 	./locale/Circuitling_en.ts \
-                ./locale/Circuitling_fr.ts \
-                ./locale/Circuitling_de.ts \
-                ./locale/Circuitling_zh.ts \
-                ./locale/Circuitling_ru.ts
+TRANSLATIONS = 	locale/Circuitling_en.ts \
+                locale/Circuitling_fr.ts \
+                locale/Circuitling_de.ts \
+                locale/Circuitling_zh.ts \
+                locale/Circuitling_ru.ts
 QT += xml
 # Input
 HEADERS += src/circuit.h \
