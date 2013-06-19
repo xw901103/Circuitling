@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
  *
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "inspectordockwidget.h"
 #include "inspectorlistwidget.h"
 
@@ -57,6 +58,7 @@ void InspectorDockWidget::processActivatedItem(QListWidgetItem * item){
 }
 
 void InspectorDockWidget::appendObject(const QString& uuid){
+    qDebug("void InspectorDockWidget::appendObject(const QString&) called - %s", uuid.toAscii().data());
     if(objectListWidget){
         QListWidgetItem* item = new InspectorListItem(uuid, objectListWidget);
         item->setText(uuid);
@@ -69,9 +71,11 @@ void InspectorDockWidget::removeObject(const QString& uuid){
     if(objectListWidget){
         QMap<QString, QListWidgetItem*>::iterator iter = itemMap.find(uuid);
         if(iter != itemMap.end()){
-            QListWidgetItem* item = *(itemMap.find(uuid));
-            if(item)
-                objectListWidget->removeItemWidget(item);
+            QListWidgetItem* item = *iter;
+            if(item) {
+                objectListWidget->takeItem(objectListWidget->row(item));
+                delete item;
+            }
         }
     }
 }

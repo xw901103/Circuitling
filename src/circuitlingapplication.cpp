@@ -28,11 +28,15 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "circuitlingapplication.h"
 #include "preferencesdialog.h"
 #include "workbench.h"
+
+#include <QDesktopServices>
+#include <QDir>
 #include <QMessageBox>
 
 CircuitlingApplication::CircuitlingApplication(int argc, char** argv) : QObject(0), app(0), prefDialog(0) {
@@ -43,6 +47,14 @@ CircuitlingApplication::~CircuitlingApplication() {
 //DO NOT DESTROY QApplication OBJECT
 //    if (app)
 //        delete app;
+}
+
+bool CircuitlingApplication::initialize(){
+    QDir dir;
+    if(dir.mkpath(getApplicationDataPath())){
+        return true;
+    }
+    return false;
 }
 
 void CircuitlingApplication::createWorkbench() {
@@ -62,16 +74,21 @@ void CircuitlingApplication::removeWorkbench(Workbench* workbench){
 }
 
 int CircuitlingApplication::exec() {
-    if (app) {
+    if (app && initialize()) {
         createWorkbench();
         return app->exec();
     }
+    QMessageBox::critical(0, tr("Circuitling"), tr("Circuitling cannot finish initialization."));
     return -1;
 }
 
 void CircuitlingApplication::quit() {
     if (app)
         app->quit();
+}
+
+QString CircuitlingApplication::getApplicationDataPath() const{
+    return QString("%1/Circuitling").arg(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
 }
 
 void CircuitlingApplication::showPreferences(){
@@ -81,5 +98,5 @@ void CircuitlingApplication::showPreferences(){
 }
 
 void CircuitlingApplication::showAbout(){
-    QMessageBox::about(0, tr("About"), tr("Circuitling\nA free tool to design and simulate circuits ;)"));
+    QMessageBox::about(0, tr("About"), tr("Circuitling\nA free tool to design and simulate circuits ;)\nCreated by Xu Waycell [xw901103@gmail.com]"));
 }

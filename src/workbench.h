@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef WORKBENCH_H
 #define WORKBENCH_H
 
@@ -57,6 +58,7 @@ public slots:
     void close();
     
     void addItemToScene(qreal x, qreal y);
+    void deleteSelectedItems();
     void processClickedItem(QGraphicsItem*);
 
     void activateTool(Circuitling::ToolItem);

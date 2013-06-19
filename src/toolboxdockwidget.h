@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef TOOLBOXDOCKWIDGET_H
 #define	TOOLBOXDOCKWIDGET_H
 
@@ -53,7 +54,9 @@ public:
     Circuitling::ToolItem getCursorToolItem() const;
     void setCursorToolItem(Circuitling::ToolItem);
 
-    void resetElementTool();    
+    void resetCursorTool();
+    void resetElementTool();
+    
     Circuitling::ToolItem getElementToolItem() const;
     void setElementToolItem(Circuitling::ToolItem);
 private:

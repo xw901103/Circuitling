@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef WORKBENCHWINDOW_H
 #define WORKBENCHWINDOW_H
 
@@ -52,6 +53,7 @@ public:
     inline QAction* quitAction() const{return quitAct;}
     inline QAction* undoAction() const{return undoAct;}
     inline QAction* redoAction() const{return redoAct;}
+    inline QAction* deleteAction() const{return delAct;}
     inline QAction* showPreferencesAction(){return showPrefAct;}
     inline QAction* showAboutAction() const{return showAboutAct;}
     inline WorkbenchGraphicsView* graphicsView() const{return view;}
@@ -82,11 +84,13 @@ private:
     QAction* copyAct;
     QAction* pasteAct;
     QAction* delAct;
+    QMenu* viewMenu;
     QMenu* workbenchMenu;
     QAction* resizeAct;
     QMenu* toolsMenu;
     QAction* showPrefAct;
     QMenu* helpMenu;
+    QAction* reloadWorkbenchAct;
     QAction* showAboutAct;
     
     WorkbenchGraphicsView* view;

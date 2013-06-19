@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef CIRCUITLINGAPPLICATION_H
 #define CIRCUITLINGAPPLICATION_H
 
@@ -52,7 +53,13 @@ public:
     ~CircuitlingApplication();
 
     int exec();
+    
+    QString getApplicationDataPath() const;
+    
+    void loadApplicationConfiguration(const QString& path);
+    void saveApplicationConfiguration(const QString& path);
 private:
+    bool initialize();
     QApplication* app;
     PreferencesDialog* prefDialog;
     QList<Workbench*> workbenchList;    

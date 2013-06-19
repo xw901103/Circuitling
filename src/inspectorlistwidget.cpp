@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
  *
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "inspectorlistwidget.h"
 
 #include <QAction>
@@ -39,10 +40,10 @@ InspectorListItem::InspectorListItem(const QString& _uuid, QListWidget* parent):
 
 InspectorListItem::~InspectorListItem(){}
 
-InspectorListWidget::InspectorListWidget(QWidget* parent):QListWidget(parent), rmvAct(0) ,cfgAct(0){
+InspectorListWidget::InspectorListWidget(QWidget* parent):QListWidget(parent), delAct(0) ,cfgAct(0){
     setContextMenuPolicy(Qt::ActionsContextMenu);
     
-    rmvAct = new QAction(tr("Remove"), this);
+    delAct = new QAction(tr("Delete"), this);
     cfgAct = new QAction(tr("Configure"), this);
 }
 

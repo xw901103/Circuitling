@@ -28,16 +28,32 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "workbenchgraphicsview.h"
 #include "workbenchgraphicsscene.h"
 #include <QtGui>
 
-WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(parent)
-, refreshAct(0) {
+WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(parent), 
+undoAct(0), redoAct(0), copyAct(0), pasteAct(0), deleteAct(0), refreshAct(0) {
+    undoAct = new QAction(this);
+    undoAct->setText(tr("Undo"));
+    redoAct = new QAction(this);
+    redoAct->setText(tr("Redo"));
+    copyAct = new QAction(this);
+    copyAct->setText(tr("Copy"));
+    pasteAct = new QAction(this);
+    pasteAct->setText(tr("Paste"));
+    deleteAct = new QAction(this);
+    deleteAct->setText(tr("Delete"));
     refreshAct = new QAction(this);
     refreshAct->setText(tr("Refresh"));
+    addAction(undoAct);
+    addAction(redoAct);
+    addAction(copyAct);
+    addAction(pasteAct);
+    addAction(deleteAct);
     addAction(refreshAct);
     setContextMenuPolicy(Qt::ActionsContextMenu);
     setDragMode(QGraphicsView::RubberBandDrag);
@@ -51,6 +67,11 @@ WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(pa
     //setCacheMode(QGraphicsView::CacheNone);
 //  setBackgroundBrush(Qt::NoBrush);
     scene()->addText(tr("Workbench Graphics View"), scene()->font());
+    scene()->addLine(QLineF(0,0,scene()->width(),0));
+    scene()->addLine(QLineF(scene()->width(),0,scene()->width(),scene()->height()));
+    scene()->addLine(QLineF(0,0,0,scene()->height()));
+    scene()->addLine(QLineF(0,scene()->height(),scene()->width(),scene()->height()));
+//    scene()->addLine(QLineF(0,0,width(),0));
 //    scene()->addRect(0,0,800,600);
 }
 
@@ -74,7 +95,8 @@ void WorkbenchGraphicsView::mousePressEvent(QMouseEvent* event) {
             case Qt::LeftButton:
                 if(item == 0){
 //                    qDebug("void WorkbenchGraphicsView::mousePressEvent(QMouseEvent*) - emit sceneClicked");
-                    emit sceneClicked(event->x(), event->y());
+                    QPointF pos(mapToScene(event->pos()));
+                    emit sceneClicked(pos.x(), pos.y());
                 } else {
 //                    qDebug("void WorkbenchGraphicsView::mousePressEvent(QMouseEvent*) - emit itemClicked");
                     emit itemClicked(item);

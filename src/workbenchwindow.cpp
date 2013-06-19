@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "workbenchwindow.h"
 #include "workbenchgraphicsview.h"
 #include <QtGui>
@@ -51,11 +52,13 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 , copyAct(0)
 , pasteAct(0)
 , delAct(0)
+, viewMenu(0)
 , workbenchMenu(0)
 , resizeAct(0)
 , toolsMenu(0)
 , showPrefAct(0)
 , helpMenu(0)
+, reloadWorkbenchAct(0)
 , showAboutAct(0)
 , view(0) {
     initializeMenus();
@@ -135,6 +138,9 @@ void WorkbenchWindow::initializeMenus() {
     editMenu->addAction(pasteAct);
     editMenu->addAction(delAct);
     
+    viewMenu = new QMenu(this);
+    viewMenu->setTitle(tr("View"));
+    
     workbenchMenu = new QMenu(this);
     workbenchMenu->setTitle(tr("Workbench"));
     
@@ -154,15 +160,20 @@ void WorkbenchWindow::initializeMenus() {
 
     helpMenu = new QMenu(this);
     helpMenu->setTitle(tr("Help"));
-
+    
+    reloadWorkbenchAct = new QAction(this);
+    reloadWorkbenchAct->setText(tr("Reload Workbench"));
+    
     showAboutAct = new QAction(this);
     showAboutAct->setMenuRole(QAction::AboutRole);
     showAboutAct->setText(tr("About"));
 
+    helpMenu->addAction(reloadWorkbenchAct);
     helpMenu->addAction(showAboutAct);
 
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(editMenu);
+    menuBar()->addMenu(viewMenu);
     menuBar()->addMenu(workbenchMenu);
     menuBar()->addMenu(toolsMenu);
     menuBar()->addMenu(helpMenu);

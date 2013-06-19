@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
  *
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef INSPECTORLISTWIDGET_H
 #define INSPECTORLISTWIDGET_H
 
@@ -56,12 +57,12 @@ public:
     explicit InspectorListWidget(QWidget* parent = 0);
     virtual ~InspectorListWidget();
     
-    inline QAction* removeAction() const{return rmvAct;}
+    inline QAction* deleteAction() const{return delAct;}
     inline QAction* configureAction() const{return cfgAct;}
     
 //    void addItem(ToolListItem*);
 private:
-    QAction* rmvAct;
+    QAction* delAct;
     QAction* cfgAct;
 };
 

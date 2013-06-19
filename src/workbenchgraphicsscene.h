@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef WORKBENCHGRAPHICSSCENE_H
 #define	WORKBENCHGRAPHICSSCENE_H
 
@@ -53,6 +54,7 @@ public:
     
     void registerItem(const QString&, QGraphicsItem*);
     QGraphicsItem* getItemByUUID(const QString&) const;
+    const QString getUUIDByItem(QGraphicsItem*) const;
 
     void addElement(WorkbenchElementGraphicsItem*, qreal x, qreal y);
     void addConnection(WorkbenchConnectionGraphicsItem*);

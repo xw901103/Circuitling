@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "circuit.h"
 #include "global.h"
 #include <QUuid>
@@ -53,6 +54,7 @@ QDomDocument Circuit::toDomDocument() {
     QDomElement circuitUUID = doc.createElement("uuid");
     circuitUUID.appendChild(doc.createCDATASection(getUUID()));
     circuit.appendChild(circuitUUID);
+/*
     for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
         QDomElement element = doc.createElement("element");
 
@@ -66,97 +68,128 @@ QDomDocument Circuit::toDomDocument() {
 
         circuit.appendChild(element);
     }
+ */
     root.appendChild(circuit);
     doc.appendChild(root);
     return doc;
 }
 
+Circuit::Object* Circuit::getObject(const QString& _uuid) const{
+    QMap<QString, Object*>::const_iterator iter = objectMap.find(_uuid);
+    if (iter != objectMap.end())
+        return *iter;
+    return 0;
+}
+
+void Circuit::deleteObject(const QString & _uuid) {
+    QMap<QString, Object*>::iterator iter = objectMap.find(_uuid);
+    if (iter != objectMap.end()) {
+        delete (*iter);
+        objectMap.erase(iter);
+    }
+}
+
 Circuit::Element* Circuit::getElement(const QString& _uuid) const {
-    QMap<QString, Element>::const_iterator iter = elementMap.find(_uuid);
-    if (iter != elementMap.end())
-        return const_cast<Element*>(&iter.value());
+    Object* obj = getObject(_uuid);
+    if (obj)
+        if (obj->getType() == Object::Element)
+            return static_cast<Element*>(obj);
     return 0;
 }
 
 QString Circuit::addElement(const Element& _element) {
-    QMap<QString, Element>::iterator iter = elementMap.insert(QUuid::createUuid(), _element);
-    iter.value().setUUID(iter.key());
+    Object* obj = static_cast<Object*>(new Element(_element));
+    QMap<QString, Object*>::iterator iter = objectMap.insert(QUuid::createUuid(), obj);
+    (*iter)->setUUID(iter.key());
     return iter.key();
 }
 
-void Circuit::delElement(const QString& _uuid) {
-    elementMap.remove(_uuid);
+void Circuit::deleteElement(const QString& _uuid) {
+    QMap<QString, Object*>::iterator iter = objectMap.find(_uuid);
+    if (iter != objectMap.end())
+        if ((*iter)->getType() == Object::Element) {
+            delete (*iter);
+            objectMap.erase(iter);
+        }
 }
 
 Circuit::Connection* Circuit::getConnection(const QString& _uuid) const {
-    QMap<QString, Connection>::const_iterator iter = connectionMap.find(_uuid);
-    if (iter != connectionMap.end())
-        return const_cast<Connection*>(&iter.value());
+    Object* obj = getObject(_uuid);
+    if (obj)
+        if (obj->getType() == Object::Connection)
+            return static_cast<Connection*>(obj);
     return 0;
 }
 
 QString Circuit::addConnection(const Connection& _connection) {
-    QMap<QString, Connection>::iterator iter = connectionMap.insert(QUuid::createUuid(), _connection);
-    iter.value().setUUID(iter.key());
+    Object* obj = static_cast<Object*>(new Connection(_connection));
+    QMap<QString, Object*>::iterator iter = objectMap.insert(QUuid::createUuid(), obj);
+    (*iter)->setUUID(iter.key());
     return iter.key();
 }
 
-void Circuit::delConnection(const QString& _uuid) {
-    connectionMap.remove(_uuid);
+void Circuit::deleteConnection(const QString& _uuid) {
+    QMap<QString, Object*>::iterator iter = objectMap.find(_uuid);
+    if (iter != objectMap.end())
+        if ((*iter)->getType() == Object::Connection) {
+            delete (*iter);
+            objectMap.erase(iter);
+        }
 }
 
-Circuit::Element::Element(Circuitling::ElementType _type) : type(_type), x(0.0), y(0.0) {
+Circuit::Object::~Object(){}
+
+Circuit::Element::Element(Circuitling::ElementType _type) : Object(Object::Element), elementType(_type), x(0.0), y(0.0) {
 }
 
-Circuit::Element::Element(const QString& _label, Circuitling::ElementType _type) : type(_type), label(_label), x(0.0), y(0.0) {
+Circuit::Element::Element(const QString& _label, Circuitling::ElementType _type) : Object(Object::Element, _label), elementType(_type), x(0.0), y(0.0) {
 }
 
-Circuit::Element::Element(qreal _x, qreal _y, Circuitling::ElementType _type) : type(_type), x(_x), y(_y) {
+Circuit::Element::Element(qreal _x, qreal _y, Circuitling::ElementType _type) : Object(Object::Element), elementType(_type), x(_x), y(_y) {
 }
 
-Circuit::Element::Element(const Element& _ref) : uuid(_ref.uuid), type(_ref.type), label(_ref.label), x(_ref.x), y(_ref.y) {
+Circuit::Element::Element(const Element& _ref) : Object(_ref), elementType(_ref.elementType), x(_ref.x), y(_ref.y) {
 }
 
 Circuit::Element::~Element() {
 }
 
 Circuit::Element& Circuit::Element::operator =(const Element& _ref) {
-    uuid = _ref.uuid;
-    type = _ref.type;
-    label = _ref.label;
+    Object::operator=(_ref);
+    elementType = _ref.elementType;
     x = _ref.x;
     y = _ref.y;
     return *this;
 }
 
 bool Circuit::Element::operator ==(const Element& _ref) const {
-    return uuid == _ref.uuid && type == _ref.type && label == _ref.label && x == _ref.x && y == _ref.y;
+    return Object::operator==(_ref) && elementType == _ref.elementType && x == _ref.x && y == _ref.y;
 }
 
 bool Circuit::Element::operator !=(const Element& _ref) const {
-    return uuid != _ref.uuid || type != _ref.type || label != _ref.label || x != _ref.x || y != _ref.y;
+    return Object::operator!=(_ref) || elementType != _ref.elementType || x != _ref.x || y != _ref.y;
 }
 
-Circuit::Connection::Connection(Element* a, Element* b) : elementA(a), elementB(b) {
+Circuit::Connection::Connection(class Element* a, class Element* b) : Object(Object::Connection), elementA(a), elementB(b) {
 }
 
-Circuit::Connection::Connection(const Connection& _ref) : uuid(_ref.uuid), elementA(_ref.elementA), elementB(_ref.elementB) {
+Circuit::Connection::Connection(const Connection& _ref) : Object(_ref), elementA(_ref.elementA), elementB(_ref.elementB) {
 }
 
 Circuit::Connection::~Connection() {
 }
 
 Circuit::Connection& Circuit::Connection::operator =(const Connection& _ref) {
-    uuid = _ref.uuid;
+    Object::operator=(_ref);
     elementA = _ref.elementA;
     elementB = _ref.elementB;
     return *this;
 }
 
 bool Circuit::Connection::operator ==(const Connection& _ref) const {
-    return uuid == _ref.uuid && elementA == _ref.elementA && elementB == _ref.elementB;
+    return Object::operator==(_ref) && elementA == _ref.elementA && elementB == _ref.elementB;
 }
 
 bool Circuit::Connection::operator !=(const Connection& _ref) const {
-    return uuid != _ref.uuid || elementA != _ref.elementA || elementB != _ref.elementB;
+    return Object::operator!=(_ref) || elementA != _ref.elementA || elementB != _ref.elementB;
 }

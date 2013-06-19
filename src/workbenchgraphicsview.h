@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef WORKBENCHGRAPHICSVIEW_H
 #define	WORKBENCHGRAPHICSVIEW_H
 
@@ -46,12 +47,22 @@ signals:
 public:
     explicit WorkbenchGraphicsView(QWidget* parent = 0);
     ~WorkbenchGraphicsView();
-    
+
+    inline QAction* undoAction() const{return undoAct;}
+    inline QAction* redoAction() const{return redoAct;}
+    inline QAction* copyAction() const{return copyAct;}
+    inline QAction* pasteAction() const{return pasteAct;}
+    inline QAction* deleteAction() const{return deleteAct;}
     inline QAction* refreshAction() const{return refreshAct;}
 protected:
     void drawBackground(QPainter* painter, const QRectF& rect);
     void mousePressEvent(QMouseEvent*);
 private:
+    QAction* undoAct;
+    QAction* redoAct;
+    QAction* copyAct;
+    QAction* pasteAct;
+    QAction* deleteAct;
     QAction* refreshAct;
 };
 

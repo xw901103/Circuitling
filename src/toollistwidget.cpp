@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "toollistwidget.h"
 
 ToolListItem::ToolListItem(const QPixmap& icon, const QString& toolTip, QListWidget* parent) : QListWidgetItem(parent), toolType(Circuitling::UnknowType), toolItem(Circuitling::UnknowItem){

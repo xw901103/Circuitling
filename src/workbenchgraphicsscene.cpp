@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies, 
  * either expressed or implied, of the Circuitling Project.
  * 
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "workbenchgraphicsscene.h"
 #include <QPainter>
 
@@ -61,4 +62,8 @@ QGraphicsItem* WorkbenchGraphicsScene::getItemByUUID(const QString & uuid) const
         return *iter;
     }
     return 0;
+}
+
+const QString WorkbenchGraphicsScene::getUUIDByItem(QGraphicsItem * item) const {
+    return itemMap.key(item);
 }

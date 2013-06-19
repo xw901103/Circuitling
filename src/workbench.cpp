@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
  *
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #include "workbench.h"
 #include "circuitlingapplication.h"
 #include "circuit.h"
@@ -62,11 +63,13 @@ Workbench::Workbench(CircuitlingApplication* parent) : QObject(static_cast<QObje
             connect(window->saveAction(), SIGNAL(triggered()), this, SLOT(save()));
             connect(window->saveAsAction(), SIGNAL(triggered()), this, SLOT(saveAs()));
             connect(window->quitAction(), SIGNAL(triggered()), parent, SLOT(quit()));
+            connect(window->deleteAction(), SIGNAL(triggered()), this, SLOT(deleteSelectedItems()));
             connect(window->showPreferencesAction(), SIGNAL(triggered()), parent, SLOT(showPreferences()));
             connect(window->showAboutAction(), SIGNAL(triggered()), parent, SLOT(showAbout()));
             
             connect(window->graphicsView(), SIGNAL(sceneClicked(qreal, qreal)), this, SLOT(addItemToScene(qreal, qreal)));
             connect(window->graphicsView(), SIGNAL(itemClicked(QGraphicsItem*)), this, SLOT(processClickedItem(QGraphicsItem*)));
+            connect(window->graphicsView()->deleteAction(), SIGNAL(triggered()), this, SLOT(deleteSelectedItems()));
         }
         window->setClosableWindow(false);
         window->setWindowTitle(tr("Circuitling - New Workbench"));
@@ -184,7 +187,6 @@ void Workbench::addItemToScene(qreal x, qreal y) {
         QString uuid;
         if(toolBoxDock->getCursorToolItem() == Circuitling::ConnectCursor && currentConnectionItem){
             //connect two element together
-//            currentConnectionItem->setLine(0, 0, x, y); //for debug only
         } else {
             switch (toolBoxDock->getElementToolItem()) {
                 case Circuitling::SelectCursor:
@@ -198,34 +200,26 @@ void Workbench::addItemToScene(qreal x, qreal y) {
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Node));
                     break;
                 case Circuitling::DC_VoltageSourceElement:
-//                  item = window->graphicsView()->scene()->addLine(0,0,x,y);
-//                  item = window->graphicsView()->scene()->addPixmap(QPixmap(":/resources/elements/dc_voltage_source.png"));
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/dc_voltage_source.png"));
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::DC_VoltageSource));
                     break;
                 case Circuitling::AC_VoltageSourceElement:
-//                  item = window->graphicsView()->scene()->addPixmap(QPixmap(":/resources/elements/ac_voltage_source.png"));
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/ac_voltage_source.png"));
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::AC_VoltageSource));
                     break;
                 case Circuitling::ResistorElement:
-//                  item = window->graphicsView()->scene()->addPixmap(QPixmap(":/resources/elements/resistor.png"));
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/resistor.png"));
-//                    window->graphicsView()->scene()->addItem(item);
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Resistor));
                     break;
                 case Circuitling::CapacitorElement:
-//                  item = window->graphicsView()->scene()->addPixmap(QPixmap(":/resources/elements/capacitor.png"));
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/capacitor.png"));
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Capacitor));
                     break;
                 case Circuitling::InductorElement:
-//                  item = window->graphicsView()->scene()->addPixmap(QPixmap(":/resources/elements/inductor.png"));
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/inductor.png"));
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Inductor));
                     break;
                 case Circuitling::DiodeElement:
-//                  item = window->graphicsView()->scene()->addPixmap(QPixmap(":/resources/elements/diode.png"));
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/diode.png"));
                     uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Diode));
                     break;
@@ -252,6 +246,27 @@ void Workbench::addItemToScene(qreal x, qreal y) {
     }
 }
 
+// remove selected item from scene and circuit
+/** HAVE NOT DONE YET !!! **/
+void Workbench::deleteSelectedItems() {
+    qDebug("void Workbench::deleteSelectedItems() called");
+    if (window)
+        if (window->graphicsView())
+            if (window->graphicsView()->scene()) {
+                WorkbenchGraphicsScene* scene = static_cast<WorkbenchGraphicsScene*>(window->graphicsView()->scene());
+                QList<QGraphicsItem*> items(scene->selectedItems());
+                for (QList<QGraphicsItem*>::iterator iter = items.begin(); iter != items.end(); ++iter) {
+                    QString uuid(scene->getUUIDByItem(*iter));
+                    qDebug("Delete circuit object %s", uuid.toAscii().data());
+                    if (circuit)
+                        circuit->deleteObject(uuid);
+                    if (inspectorDock)
+                        inspectorDock->removeObject(uuid);
+                    scene->removeItem(*iter);
+                }
+            }
+}
+
 void Workbench::activateTool(Circuitling::ToolItem toolItem) {
     if(toolItem != Circuitling::ConnectCursor)
         if (currentConnectionItem)
@@ -263,6 +278,7 @@ void Workbench::activateTool(Circuitling::ToolItem toolItem) {
                 currentConnectionItem = 0;
             }
     bool resetElementTool = false;
+    bool resetCursorTool = false;
     switch(toolItem){
         case Circuitling::SelectCursor:
 //            toolBoxDock->resetElementTool();
@@ -295,6 +311,7 @@ void Workbench::activateTool(Circuitling::ToolItem toolItem) {
         case Circuitling::InductorElement:
         case Circuitling::CapacitorElement:
         case Circuitling::DiodeElement:
+            resetCursorTool = true;
             break;
         default:
             qDebug("void Workbench::activateTool(Circuitling::ToolItem) - default case");
@@ -302,6 +319,8 @@ void Workbench::activateTool(Circuitling::ToolItem toolItem) {
     }
     if(resetElementTool)
         toolBoxDock->resetElementTool();
+    if(resetCursorTool)
+        toolBoxDock->resetCursorTool();
 }
 
 void Workbench::processClickedItem(QGraphicsItem * item){

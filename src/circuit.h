@@ -28,8 +28,9 @@
  * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
  *
- * authors:Xu Waycell
+ * authors:Xu Waycell [xw901103@gmail.com]
  */
+
 #ifndef CIRCUIT_H
 #define CIRCUIT_H
 
@@ -40,11 +41,15 @@
 
 class Circuit {
 public:
+    class Object;
     class Element;
     class Connection;
 
     Circuit();
     ~Circuit();
+    
+    Object* getObject(const QString& uuid) const;
+    void deleteObject(const QString& uuid);
 
     Element* getElement(const QString& uuid) const;
     /**
@@ -53,7 +58,7 @@ public:
      * @return uuid of this element in the circuit
      */
     QString addElement(const Element& _element);
-    void delElement(const QString& _uuid);
+    void deleteElement(const QString& _uuid);
 
     Connection* getConnection(const QString& uuid) const;
     /**
@@ -62,7 +67,7 @@ public:
      * @return uuid of this element in the circuit
      */
     QString addConnection(const Connection& _connection);
-    void delConnection(const QString& uuid);
+    void deleteConnection(const QString& uuid);
 
     /**
      * if there does not have one then generate one
@@ -83,18 +88,56 @@ public:
 
     QDomDocument toDomDocument();
 private:
-    QMap<QString, Element> elementMap;
-    QMap<QString, Connection> connectionMap;
+//    QMap<QString, Element> elementMap;
+//    QMap<QString, Connection> connectionMap;
+    QMap<QString, Object*> objectMap;
     QString uuid;
     QString title;
 //    qreal x;
 //    qreal y;
 };
 
-class Circuit::Element {
-    QString uuid;
-    Circuitling::ElementType type;
+class Circuit::Object {
+public:
+    enum Type {
+        Unknow,
+        Element,
+        Connection
+    };
+    explicit Object(Type _type, const QString& _label = QString(), const QString& _uuid = QString()):type(_type), label(_label), uuid(_uuid){}
+    Object(const Object& _ref): type(_ref.type), label(_ref.label), uuid(_ref.uuid) {}
+    virtual ~Object() =0;
+    
+    inline Type getType() const{return type;}
+    inline void setType(Type _type){type = _type;}
+    
+    inline const QString& getLabel() const{return label;}
+    inline void setLabel(const QString& _label){label = _label;}
+    
+    inline const QString& getUUID() const{return uuid;}
+    inline void setUUID(const QString& _uuid){uuid = _uuid;}
+    
+    inline Object& operator =(const Object& ref) {
+        type = ref.type;
+        label = ref.label;
+        uuid = ref.uuid;
+        return *this;
+    }
+    
+    inline bool operator ==(const Object& ref) const {
+        return type == ref.type && uuid == ref.uuid && label == ref.label;
+    }
+    inline bool operator !=(const Object& ref) const {
+        return type != ref.type || uuid != ref.uuid || label != ref.label;
+    }
+private:
+    Type type;
     QString label;
+    QString uuid;
+};
+
+class Circuit::Element:public Object {
+    Circuitling::ElementType elementType;
     qreal x;
     qreal y;
 public:
@@ -109,28 +152,12 @@ public:
     bool operator ==(const Element&) const;
     bool operator !=(const Element&) const;
 
-    inline QString getLabel() const {
-        return label;
+    inline Circuitling::ElementType getElementType() const {
+        return elementType;
     }
 
-    inline void setLabel(const QString& _label) {
-        label = _label;
-    }
-
-    inline Circuitling::ElementType getType() const {
-        return type;
-    }
-
-    inline void setType(Circuitling::ElementType _type) {
-        type = _type;
-    }
-
-    inline void setUUID(const QString& _uuid) {
-        uuid = _uuid;
-    }
-
-    inline QString getUUID() const {
-        return uuid;
+    inline void setElementType(Circuitling::ElementType _type) {
+        elementType = _type;
     }
 
     inline qreal getX() const {
@@ -147,12 +174,11 @@ public:
     }
 };
 
-class Circuit::Connection {
-    QString uuid;
-    Element* elementA;
-    Element* elementB;
+class Circuit::Connection:public Object{
+    class Element* elementA;
+    class Element* elementB;
 public:
-    explicit Connection(Element* a, Element* b);
+    explicit Connection(class Element* a, class Element* b);
     Connection(const Connection&);
     ~Connection();
 
@@ -161,38 +187,30 @@ public:
     bool operator==(const Connection&) const;
     bool operator!=(const Connection&) const;
     
-    inline Element* getConnectedElement(Element* element) const{
+    inline class Element* getConnectedElement(class Element* element) const{
         if(element == elementA || element == elementB)
             return element == elementA ? elementB : elementA;
         return 0;
     }
 
-    inline Element* getElementA() const {
+    inline class Element* getElementA() const {
         return elementA;
     }
 
-    inline void setElementA(Element* _a) {
+    inline void setElementA(class Element* _a) {
         elementA = _a;
     }
 
-    inline Element* getElementB() const {
+    inline class Element* getElementB() const {
         return elementB;
     }
 
-    inline void setElementB(Element* _b) {
+    inline void setElementB(class Element* _b) {
         elementB = _b;
     }
     
     inline bool isValid() const{
         return elementA && elementB;
-    }
-
-    inline QString getUUID() const {
-        return uuid;
-    }
-
-    inline void setUUID(QString _uuid) {
-        uuid = _uuid;
     }
 
 };
