@@ -31,16 +31,18 @@
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#include "workbench.h"
-#include "circuitlingapplication.h"
-#include "circuit.h"
-#include "workbenchwindow.h"
-#include "toolboxdockwidget.h"
-#include "inspectordockwidget.h"
 #include <QAction>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextStream>
+
+#include "workbench.h"
+#include "circuitlingapplication.h"
+#include "circuit.h"
+#include "circuitdomdocumentparser.h"
+#include "workbenchwindow.h"
+#include "toolboxdockwidget.h"
+#include "inspectordockwidget.h"
 #include "workbenchgraphicsitem.h"
 #include "workbenchgraphicsscene.h"
 #include "workbenchgraphicsview.h"
@@ -127,7 +129,8 @@ void Workbench::save() {
         QMessageBox::warning(window, tr("Warning"), tr("Cannot write file.\npath:%1").arg(filepath));
         return;
     }
-    QDomDocument doc = circuit->toDomDocument();
+//    QDomDocument doc = circuit->toDomDocument();
+    QDomDocument doc = CircuitDomDocumentParser::parseCircuitToDomDocument(circuit);
     QDomElement root = doc.documentElement();
     doc.insertBefore(doc.createComment("Created by Circuitling"), root);
     QDomElement workbench = doc.createElement("workbench");

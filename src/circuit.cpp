@@ -47,6 +47,7 @@ QString Circuit::getUUID() {
     return uuid; //it will cast to QString
 }
 
+/*
 QDomDocument Circuit::toDomDocument() {
     QDomDocument doc;
     QDomElement root = doc.createElement("xml");
@@ -54,25 +55,26 @@ QDomDocument Circuit::toDomDocument() {
     QDomElement circuitUUID = doc.createElement("uuid");
     circuitUUID.appendChild(doc.createCDATASection(getUUID()));
     circuit.appendChild(circuitUUID);
-/*
-    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-        QDomElement element = doc.createElement("element");
 
-        QDomElement elementX = doc.createElement("x");
-        elementX.appendChild(doc.createTextNode("0"));
-        QDomElement elementY = doc.createElement("y");
-        elementY.appendChild(doc.createTextNode("0"));
+//    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
+//        QDomElement element = doc.createElement("element");
+
+//        QDomElement elementX = doc.createElement("x");
+//        elementX.appendChild(doc.createTextNode("0"));
+//        QDomElement elementY = doc.createElement("y");
+//        elementY.appendChild(doc.createTextNode("0"));
         //coordinate tags
-        element.appendChild(elementX);
-        element.appendChild(elementY);
+//        element.appendChild(elementX);
+//        element.appendChild(elementY);
 
-        circuit.appendChild(element);
-    }
- */
+//        circuit.appendChild(element);
+//    }
+ 
     root.appendChild(circuit);
     doc.appendChild(root);
     return doc;
 }
+*/
 
 Circuit::Object* Circuit::getObject(const QString& _uuid) const{
     QMap<QString, Object*>::const_iterator iter = objectMap.find(_uuid);

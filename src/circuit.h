@@ -37,7 +37,7 @@
 #include "global.h"
 #include <QString>
 #include <QMap>
-#include <QDomDocument>
+//#include <QDomDocument>
 
 class Circuit {
 public:
@@ -86,7 +86,7 @@ public:
         title = _title;
     }
 
-    QDomDocument toDomDocument();
+//    QDomDocument toDomDocument();
 private:
 //    QMap<QString, Element> elementMap;
 //    QMap<QString, Connection> connectionMap;
