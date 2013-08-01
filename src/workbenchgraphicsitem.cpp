@@ -41,6 +41,9 @@ WorkbenchElementGraphicsItem::WorkbenchElementGraphicsItem(const QPixmap& _pixma
 }
 
 WorkbenchElementGraphicsItem::~WorkbenchElementGraphicsItem() {
+    while (!connectionList.isEmpty()) {
+        this->removeConnection(connectionList.first());
+    }
 }
 
 QVariant WorkbenchElementGraphicsItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value){
@@ -60,6 +63,15 @@ QVariant WorkbenchElementGraphicsItem::itemChange(QGraphicsItem::GraphicsItemCha
     return ret;
 }
 
+void WorkbenchElementGraphicsItem:: removeConnection(WorkbenchConnectionGraphicsItem* _connection) {
+    if (_connection) {
+        _connection->removeConnection(this);
+        if(!connectionList.isEmpty())
+            connectionList.removeAll(_connection);
+    }
+}
+
+
 WorkbenchConnectionGraphicsItem::WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA, WorkbenchElementGraphicsItem* _elementB, QGraphicsItem* parent) : QGraphicsLineItem(parent), instance(0), elementA(_elementA), elementB(_elementB) {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setPen(QPen(Qt::SolidLine));
@@ -70,6 +82,13 @@ WorkbenchConnectionGraphicsItem::~WorkbenchConnectionGraphicsItem() {
         elementA->removeConnection(this);
     if (elementB)
         elementB->removeConnection(this);
+}
+
+void WorkbenchConnectionGraphicsItem::removeConnection(WorkbenchElementGraphicsItem* _element) {
+    if (elementA == _element)
+        elementA = 0;
+    if (elementB == _element)
+        elementB = 0;
 }
 
 void WorkbenchConnectionGraphicsItem::setElementA(WorkbenchElementGraphicsItem* _elementA) {

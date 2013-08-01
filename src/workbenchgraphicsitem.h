@@ -68,11 +68,7 @@ public:
         connectionList.append(_connection);
     }
     
-    inline void removeConnection(WorkbenchConnectionGraphicsItem* _connection) {
-        if(!connectionList.isEmpty())
-            connectionList.removeAll(_connection);
-    }
-    
+    void removeConnection(WorkbenchConnectionGraphicsItem* _connection);
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 };
@@ -116,6 +112,8 @@ public:
     inline bool isValid() const{return elementA && elementB;}
     
     void refresh();
+    
+    void removeConnection(WorkbenchElementGraphicsItem* _element);
     
 };
 
