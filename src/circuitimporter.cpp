@@ -31,44 +31,10 @@
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#include "circuitdomdocumentparser.h"
+#include "circuitimporter.h"
 
-//use importer/exporter class instead of this.
+CircuitImporter::CircuitImporter(QObject* parent):QObject(parent){}
 
-QDomDocument CircuitDomDocumentParser::parseCircuitToDomDocument(Circuit* _circuit) {
-    if (_circuit){
-            QDomDocument doc;
-            QDomElement root = doc.createElement("xml");
-            QDomElement circuit = doc.createElement("circuit");
-            QDomElement circuitUUID = doc.createElement("uuid");
-            circuitUUID.appendChild(doc.createCDATASection(_circuit->getUUID()));
-            circuit.appendChild(circuitUUID);
-            
-            //    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-            //        QDomElement element = doc.createElement("element");
-            
-            //        QDomElement elementX = doc.createElement("x");
-            //        elementX.appendChild(doc.createTextNode("0"));
-            //        QDomElement elementY = doc.createElement("y");
-            //        elementY.appendChild(doc.createTextNode("0"));
-            //coordinate tags
-            //        element.appendChild(elementX);
-            //        element.appendChild(elementY);
-            
-            //        circuit.appendChild(element);
-            //    }
-            
-            root.appendChild(circuit);
-            doc.appendChild(root);
-            return doc;
-    }
-    return QDomDocument();
-}
+CircuitImporter::~CircuitImporter(){}
 
-Circuit* CircuitDomDocumentParser::parseDomDocumentToCircuit(const QDomDocument & _doc) {
-    if (!_doc.isNull()) {
-        Circuit* circuit = new Circuit();
-        return circuit;
-    }
-    return 0;
-}
+void CircuitImporter::importFrom(Circuit *, QIODevice *){}

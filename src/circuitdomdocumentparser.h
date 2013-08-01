@@ -38,6 +38,8 @@
 
 #include "circuit.h"
 
+//use importer/exporter class instead of this.
+
 class CircuitDomDocumentParser{
 public:
     static QDomDocument parseCircuitToDomDocument(Circuit*);

@@ -31,44 +31,20 @@
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#include "circuitdomdocumentparser.h"
+#ifndef CIRCUITEXPORTER_H
+#define CIRCUITEXPORTER_H
 
-//use importer/exporter class instead of this.
+#include <QObject>
+#include <QIODevice>
 
-QDomDocument CircuitDomDocumentParser::parseCircuitToDomDocument(Circuit* _circuit) {
-    if (_circuit){
-            QDomDocument doc;
-            QDomElement root = doc.createElement("xml");
-            QDomElement circuit = doc.createElement("circuit");
-            QDomElement circuitUUID = doc.createElement("uuid");
-            circuitUUID.appendChild(doc.createCDATASection(_circuit->getUUID()));
-            circuit.appendChild(circuitUUID);
-            
-            //    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-            //        QDomElement element = doc.createElement("element");
-            
-            //        QDomElement elementX = doc.createElement("x");
-            //        elementX.appendChild(doc.createTextNode("0"));
-            //        QDomElement elementY = doc.createElement("y");
-            //        elementY.appendChild(doc.createTextNode("0"));
-            //coordinate tags
-            //        element.appendChild(elementX);
-            //        element.appendChild(elementY);
-            
-            //        circuit.appendChild(element);
-            //    }
-            
-            root.appendChild(circuit);
-            doc.appendChild(root);
-            return doc;
-    }
-    return QDomDocument();
-}
+class Circuit;
 
-Circuit* CircuitDomDocumentParser::parseDomDocumentToCircuit(const QDomDocument & _doc) {
-    if (!_doc.isNull()) {
-        Circuit* circuit = new Circuit();
-        return circuit;
-    }
-    return 0;
-}
+class CircuitExporter:public QObject {
+public:
+    explicit CircuitExporter(QObject* parent = 0);
+    virtual ~CircuitExporter() = 0;
+    
+    virtual void exportTo(Circuit*, QIODevice*) = 0;
+};
+
+#endif
