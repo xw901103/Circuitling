@@ -31,6 +31,7 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the Circuitling Project.
 
 Supported Platforms
+* BSDs
 * Apple OS X
 * Microsoft Windows
 * Any linux distributions shipping with X11
