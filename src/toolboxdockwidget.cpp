@@ -48,8 +48,9 @@ ToolBoxDockWidget::ToolBoxDockWidget(QWidget* parent) : QDockWidget(parent) {
     cursorBox->setTitle(tr("Cursor"));
     QVBoxLayout* cursorBoxLayout = new QVBoxLayout(cursorBox);
     cursorBox->setLayout(cursorBoxLayout);
-    cursorListWidget = new ToolListWidget(toolBoxWidget);
+//    cursorListWidget = new ToolListWidget(toolBoxWidget);
     //cursor items for test begin
+    /*
     ToolListItem* cursorItem = 0;
     cursorItem = new ToolListItem(QPixmap(":/resources/cursors/arrow.png"), tr("Select"), cursorListWidget);
     cursorItem->setToolType(Circuitling::Cursor);
@@ -67,8 +68,53 @@ ToolBoxDockWidget::ToolBoxDockWidget(QWidget* parent) : QDockWidget(parent) {
     cursorItem->setToolType(Circuitling::Cursor);
     cursorItem->setToolItem(Circuitling::ZoomCursor);
     cursorListWidget->addItem(cursorItem);
+    */
     //cursor items for test end
-    cursorBoxLayout->addWidget(cursorListWidget);
+    
+    //cursor tool buttons
+    QHBoxLayout* cursorToolButtonGroupLayout = new QHBoxLayout(this);
+    cursorSelectToolButton = new QToolButton(this);
+    cursorSelectToolButton->setText(tr("Select"));
+    cursorSelectToolButton->setToolTip(tr("Select"));
+    cursorSelectToolButton->setIcon(QIcon(QPixmap(":/resources/cursors/arrow.png")));
+    cursorSelectToolButton->setCheckable(true);
+    cursorSelectToolButton->setAutoExclusive(true);
+    connect(cursorSelectToolButton, SIGNAL(clicked()), this, SLOT(resetElementTool()));
+    cursorToolButtonGroupLayout->addWidget(cursorSelectToolButton);
+    cursorConnectToolButton = new QToolButton(this);
+    cursorConnectToolButton->setText(tr("Connect"));
+    cursorConnectToolButton->setToolTip(tr("Connect"));
+    cursorConnectToolButton->setIcon(QIcon(QPixmap(":/resources/cursors/cross.png")));
+    cursorConnectToolButton->setCheckable(true);
+    cursorConnectToolButton->setAutoExclusive(true);
+    connect(cursorConnectToolButton, SIGNAL(clicked()), this, SLOT(resetElementTool()));
+    cursorToolButtonGroupLayout->addWidget(cursorConnectToolButton);
+    cursorMoveToolButton = new QToolButton(this);
+    cursorMoveToolButton->setText(tr("Move"));
+    cursorMoveToolButton->setToolTip(tr("Move"));
+    cursorMoveToolButton->setIcon(QIcon(QPixmap(":/resources/cursors/hand1.png")));
+    cursorMoveToolButton->setCheckable(true);
+    connect(cursorMoveToolButton, SIGNAL(toggled(bool)), this, SIGNAL(toggledCursorMove(bool)));
+    cursorToolButtonGroupLayout->addWidget(cursorMoveToolButton);
+    cursorZoomToolButton = new QToolButton(this);
+    cursorZoomToolButton->setText(tr("Zoom"));
+    cursorZoomToolButton->setToolTip(tr("Zoom"));
+    cursorZoomToolButton->setIcon(QIcon(QPixmap(":/resources/cursors/zoom.png")));
+    cursorZoomToolButton->setCheckable(true);
+    connect(cursorZoomToolButton, SIGNAL(toggled(bool)), this, SIGNAL(toggledCursorZoom(bool)));
+    cursorToolButtonGroupLayout->addWidget(cursorZoomToolButton);
+    QSpacerItem* cursorToolButtonGroupHSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    cursorToolButtonGroupLayout->addItem(cursorToolButtonGroupHSpacer);
+    cursorBoxLayout->addLayout(cursorToolButtonGroupLayout);
+    QSpacerItem* cursorBoxVSpacer = new QSpacerItem(20, 206, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    cursorBoxLayout->addItem(cursorBoxVSpacer);
+    
+//    QToolButton* cursorTestButton = new QToolButton(this);
+//    cursorTestButton->setCheckable(true);
+//    cursorTestButton->setIcon(QIcon(QPixmap(":/resources/cursors/hand1.png")));
+//    cursorTestButton->setText(tr("Test"));
+//    cursorBoxLayout->addWidget(cursorTestButton);
+//    cursorBoxLayout->addWidget(cursorListWidget);
     
     QGroupBox* elementBox = new QGroupBox(toolBoxWidget);
     elementBox->setTitle(tr("Element"));
@@ -115,7 +161,7 @@ ToolBoxDockWidget::ToolBoxDockWidget(QWidget* parent) : QDockWidget(parent) {
     toolBoxLayout->addItem(verticalSpacer);
     setWidget(toolBoxWidget);
     
-    connect(cursorListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(processToolItemChange(QListWidgetItem*)));
+//    connect(cursorListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(processToolItemChange(QListWidgetItem*)));
     connect(elementListWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(processToolItemChange(QListWidgetItem*)));
 }
 
@@ -123,20 +169,39 @@ ToolBoxDockWidget::~ToolBoxDockWidget() {
 }
 
 void ToolBoxDockWidget::resetCursorTool(){
-    cursorListWidget->reset();
+//    if (cursorListWidget)
+//        cursorListWidget->reset();
+    if (cursorSelectToolButton)
+        cursorSelectToolButton->setChecked(true);
+    if (cursorConnectToolButton)
+        cursorConnectToolButton->setChecked(false);
+    if (cursorMoveToolButton)
+        cursorMoveToolButton->setChecked(true);
+    if (cursorZoomToolButton)
+        cursorZoomToolButton->setChecked(false);
 }
 
 void ToolBoxDockWidget::resetElementTool(){
-    elementListWidget->reset();
+    if (elementListWidget)
+        elementListWidget->reset();
 }
 
 Circuitling::ToolItem ToolBoxDockWidget::getCursorToolItem() const{
+/*
     if(cursorListWidget){
         ToolListItem* item = static_cast<ToolListItem*>(cursorListWidget->currentItem());
         if(item){
             return item->getToolItem();
         }
     }
+    return Circuitling::UnknowItem;
+*/
+    if (cursorSelectToolButton)
+        if (cursorSelectToolButton->isChecked())
+            return Circuitling::SelectCursor;
+    if (cursorConnectToolButton)
+        if (cursorConnectToolButton->isChecked())
+            return Circuitling::ConnectCursor;
     return Circuitling::UnknowItem;
 }
 

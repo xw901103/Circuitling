@@ -1,18 +1,18 @@
 /**
  * Circuitling
- * 
+ *
  * Copyright (c) 2013, Circuitling Project
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer. 
+ * list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution. 
- * 
+ * and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,49 +23,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation are those
- * of the authors and should not be interpreted as representing official policies, 
+ * of the authors and should not be interpreted as representing official policies,
  * either expressed or implied, of the Circuitling Project.
- * 
+ *
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#ifndef WORKBENCHGRAPHICSVIEW_H
-#define	WORKBENCHGRAPHICSVIEW_H
+#ifndef CIRCUITELEMENTCONFIGURATIONDIALOG_H
+#define CIRCUITELEMENTCONFIGURATIONDIALOG_H
 
-#include <QGraphicsView>
+#include <QDialog>
 
-class QMenu;
-class QAction;
-
-class WorkbenchGraphicsView : public QGraphicsView {
-    Q_OBJECT
-signals:
-    void sceneClicked(qreal x, qreal y);
-    void itemClicked(QGraphicsItem*);
+class CircuitElementConfigurationDialog:public QDialog {
 public:
-    explicit WorkbenchGraphicsView(QWidget* parent = 0);
-    ~WorkbenchGraphicsView();
-
-    inline QAction* undoAction() const{return undoAct;}
-    inline QAction* redoAction() const{return redoAct;}
-    inline QAction* copyAction() const{return copyAct;}
-    inline QAction* pasteAction() const{return pasteAct;}
-    inline QAction* deleteAction() const{return deleteAct;}
-    inline QAction* refreshAction() const{return refreshAct;}
-    inline QAction* configureAction() const{return configureAct;}
-protected:
-    void drawBackground(QPainter* painter, const QRectF& rect);
-    void mousePressEvent(QMouseEvent*);
-private:
-    QAction* undoAct;
-    QAction* redoAct;
-    QAction* copyAct;
-    QAction* pasteAct;
-    QAction* deleteAct;
-    QAction* refreshAct;
-    QAction* configureAct;
+    explicit CircuitElementConfigurationDialog(QWidget* _parent = 0);
+    ~CircuitElementConfigurationDialog();
 };
 
 #endif

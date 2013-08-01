@@ -54,6 +54,7 @@ public:
     inline QAction* undoAction() const{return undoAct;}
     inline QAction* redoAction() const{return redoAct;}
     inline QAction* deleteAction() const{return delAct;}
+    inline QAction* configureAction() const{return confAct;}
     inline QAction* showPreferencesAction(){return showPrefAct;}
     inline QAction* showAboutAction() const{return showAboutAct;}
     inline WorkbenchGraphicsView* graphicsView() const{return view;}
@@ -84,6 +85,7 @@ private:
     QAction* copyAct;
     QAction* pasteAct;
     QAction* delAct;
+    QAction* confAct;
     QMenu* viewMenu;
     QMenu* workbenchMenu;
     QAction* resizeAct;

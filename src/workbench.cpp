@@ -41,6 +41,7 @@
 #include "circuit.h"
 #include "circuitdomdocumentparser.h"
 #include "workbenchwindow.h"
+#include "circuitelementconfigurationdialog.h"
 #include "toolboxdockwidget.h"
 #include "inspectordockwidget.h"
 #include "workbenchgraphicsitem.h"
@@ -50,7 +51,7 @@
 //test reason
 #include <QGraphicsPixmapItem>
 
-Workbench::Workbench(CircuitlingApplication* parent) : QObject(static_cast<QObject*> (parent)), closing(false), circuit(0), window(0), toolBoxDock(0), inspectorDock(0), currentConnectionItem(0) {
+Workbench::Workbench(CircuitlingApplication* parent) : QObject(static_cast<QObject*> (parent)), closing(false), circuit(0), window(0), confDialog(0), toolBoxDock(0), inspectorDock(0), currentConnectionItem(0) {
     circuit = new Circuit();
     window = new WorkbenchWindow();
     initializeDocks();
@@ -66,6 +67,7 @@ Workbench::Workbench(CircuitlingApplication* parent) : QObject(static_cast<QObje
             connect(window->saveAsAction(), SIGNAL(triggered()), this, SLOT(saveAs()));
             connect(window->quitAction(), SIGNAL(triggered()), parent, SLOT(quit()));
             connect(window->deleteAction(), SIGNAL(triggered()), this, SLOT(deleteSelectedItems()));
+            connect(window->configureAction(), SIGNAL(triggered()), this, SLOT(showCurrentCircuitElementConfiguration()));
             connect(window->showPreferencesAction(), SIGNAL(triggered()), parent, SLOT(showPreferences()));
             connect(window->showAboutAction(), SIGNAL(triggered()), parent, SLOT(showAbout()));
             
@@ -360,8 +362,13 @@ void Workbench::processClickedItem(QGraphicsItem * item){
 
 void Workbench::initializeDocks() {
     toolBoxDock = new ToolBoxDockWidget(window);
-    if (toolBoxDock)
+    if (toolBoxDock) {
+        toolBoxDock->resetCursorTool();
+        toolBoxDock->resetElementTool();
+        connect(toolBoxDock, SIGNAL(toggledCursorMove(bool)), this, SLOT(toggleCursorMove(bool)));
+        connect(toolBoxDock, SIGNAL(toggledCursorZoom(bool)), this, SLOT(toggleCursorZoom(bool)));
         connect(toolBoxDock, SIGNAL(toolItemActivated(Circuitling::ToolItem)), this, SLOT(activateTool(Circuitling::ToolItem)));
+    }
     
     inspectorDock = new InspectorDockWidget(window);
     if(inspectorDock)
@@ -383,4 +390,18 @@ void Workbench::inspectSceneItem(const QString & uuid){
         if(item)
             item->setSelected(true);
     }
+}
+
+void Workbench::toggleCursorMove(bool _status) {
+    qDebug("void Workbench::toggleCursorMove - called ARGUMENT:%d", _status);
+}
+
+void Workbench::toggleCursorZoom(bool _status) {
+    qDebug("void Workbench::toggleCursorZoom - called ARGUMENT:%d", _status);
+}
+
+void Workbench::showCurrentCircuitElementConfiguration() {
+    if (!confDialog)
+        confDialog = new CircuitElementConfigurationDialog(this->window);
+    confDialog->exec();
 }

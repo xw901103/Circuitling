@@ -36,25 +36,38 @@
 #include <QtGui>
 
 WorkbenchGraphicsView::WorkbenchGraphicsView(QWidget* parent) : QGraphicsView(parent), 
-undoAct(0), redoAct(0), copyAct(0), pasteAct(0), deleteAct(0), refreshAct(0) {
+undoAct(0), redoAct(0), copyAct(0), pasteAct(0), deleteAct(0), refreshAct(0), configureAct(0) {
+    QAction* separator = 0;
     undoAct = new QAction(this);
     undoAct->setText(tr("Undo"));
+    addAction(undoAct);
     redoAct = new QAction(this);
     redoAct->setText(tr("Redo"));
+    addAction(redoAct);
+    separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);
     copyAct = new QAction(this);
     copyAct->setText(tr("Copy"));
+    addAction(copyAct);
     pasteAct = new QAction(this);
     pasteAct->setText(tr("Paste"));
+    addAction(pasteAct);
     deleteAct = new QAction(this);
     deleteAct->setText(tr("Delete"));
+    addAction(deleteAct);
+    separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);    
     refreshAct = new QAction(this);
     refreshAct->setText(tr("Refresh"));
-    addAction(undoAct);
-    addAction(redoAct);
-    addAction(copyAct);
-    addAction(pasteAct);
-    addAction(deleteAct);
     addAction(refreshAct);
+    separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);    
+    configureAct = new QAction(this);
+    configureAct->setText(tr("Configure"));
+    addAction(configureAct);
     setContextMenuPolicy(Qt::ActionsContextMenu);
     setDragMode(QGraphicsView::RubberBandDrag);
 

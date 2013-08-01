@@ -52,6 +52,7 @@ WorkbenchWindow::WorkbenchWindow(QWidget* parent) : QMainWindow(parent)
 , copyAct(0)
 , pasteAct(0)
 , delAct(0)
+, confAct(0)
 , viewMenu(0)
 , workbenchMenu(0)
 , resizeAct(0)
@@ -130,6 +131,10 @@ void WorkbenchWindow::initializeMenus() {
     delAct = new QAction(this);
     delAct->setText(tr("Delete"));
     
+    confAct = new QAction(this);
+    confAct->setMenuRole(QAction::NoRole);
+    confAct->setText(tr("Configure"));
+    
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
@@ -137,6 +142,8 @@ void WorkbenchWindow::initializeMenus() {
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
     editMenu->addAction(delAct);
+    editMenu->addSeparator();
+    editMenu->addAction(confAct);
     
     viewMenu = new QMenu(this);
     viewMenu->setTitle(tr("View"));

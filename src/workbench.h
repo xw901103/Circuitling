@@ -40,6 +40,7 @@
 class CircuitlingApplication;
 class Circuit;
 class WorkbenchWindow;
+class CircuitElementConfigurationDialog;
 class ToolBoxDockWidget;
 class InspectorDockWidget;
 
@@ -60,10 +61,15 @@ public slots:
     void addItemToScene(qreal x, qreal y);
     void deleteSelectedItems();
     void processClickedItem(QGraphicsItem*);
+    
+    void toggleCursorMove(bool);
+    void toggleCursorZoom(bool);
 
     void activateTool(Circuitling::ToolItem);
     
     void inspectSceneItem(const QString&);
+    
+    void showCurrentCircuitElementConfiguration();
 public:
     explicit Workbench(CircuitlingApplication* parent);
     ~Workbench();
@@ -78,6 +84,7 @@ private:
 
     Circuit* circuit;
     WorkbenchWindow* window;
+    CircuitElementConfigurationDialog* confDialog;
     ToolBoxDockWidget* toolBoxDock;
     InspectorDockWidget* inspectorDock;
     
