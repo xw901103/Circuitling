@@ -33,8 +33,8 @@
 
 #include "circuitexporter.h"
 
-CircuitExporter::CircuitExporter(QObject* parent):QObject(parent){}
+CircuitExporter::CircuitExporter(const QString& _extension, QObject* parent):QObject(parent), p_extension(_extension){}
 
 CircuitExporter::~CircuitExporter(){}
 
-void CircuitExporter::exportTo(Circuit *, QIODevice *){}
+void CircuitExporter::exportCircuitTo(Circuit *, QIODevice *){}

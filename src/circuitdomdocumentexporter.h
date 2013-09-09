@@ -31,19 +31,18 @@
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#ifndef CIRCUITDOMDOCUMENTPARSER_H
-#define CIRCUITDOMDOCUMENTPARSER_H
+#ifndef CIRCUITDOMDOCUMENTEXPORTER_H
+#define CIRCUITDOMDOCUMENTEXPORTER_H
 
-#include <QDomDocument>
+#include "circuitexporter.h"
 
-#include "circuit.h"
-
-//use importer/exporter class instead of this.
-
-class CircuitDomDocumentParser{
+class CircuitDomDocumentExporter:public CircuitExporter {
+    DISABLE_COPY(CircuitDomDocumentExporter)
 public:
-    static QDomDocument parseCircuitToDomDocument(Circuit*);
-    static Circuit* parseDomDocumentToCircuit(const QDomDocument&);
+    explicit CircuitDomDocumentExporter(QObject* parent = 0);
+    ~CircuitDomDocumentExporter();
+
+    void exportCircuitTo(Circuit*, QIODevice*);
 };
 
 #endif

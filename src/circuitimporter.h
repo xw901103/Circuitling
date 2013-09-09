@@ -34,17 +34,24 @@
 #ifndef CIRCUITIMPORTER_H
 #define CIRCUITIMPORTER_H
 
+#include "global.h"
+
 #include <QObject>
 #include <QIODevice>
 
 class Circuit;
 
 class CircuitImporter:public QObject {
+private:
+    QString p_extension;
 public:
-    explicit CircuitImporter(QObject* parent = 0);
+    explicit CircuitImporter(const QString& _extension, QObject* parent = 0);
     virtual ~CircuitImporter() = 0;
+
+    inline QString getFilenameExtension() const {return p_extension;}
+    inline void setFilenameExtension(const QString& _extension) {p_extension = _extension;}
     
-    virtual void importFrom(Circuit*, QIODevice*) = 0;
+    virtual void importCircuitFrom(Circuit*, QIODevice*) = 0;
 };
 
 #endif

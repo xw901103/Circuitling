@@ -37,6 +37,9 @@
 #include <QApplication>
 #include <QList>
 
+class CircuitExporter;
+class CircuitImporter;
+
 class Workbench;
 class PreferencesDialog;
 
@@ -62,7 +65,9 @@ private:
     bool initialize();
     QApplication* app;
     PreferencesDialog* prefDialog;
-    QList<Workbench*> workbenchList;    
+    QList<CircuitExporter*> exporterList;
+    QList<CircuitImporter*> importerList;
+    QList<Workbench*> workbenchList;
 };
 
 #endif

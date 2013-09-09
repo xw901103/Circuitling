@@ -34,50 +34,67 @@
 #ifndef WORKBENCHGRAPHICSITEM_H
 #define	WORKBENCHGRAPHICSITEM_H
 
+#include "global.h"
 #include <QGraphicsItem>
 #include "circuit.h"
 
-class WorkbenchElementGraphicsItem;
-class WorkbenchConnectionGraphicsItem;
-
-class WorkbenchElementGraphicsItem : public QGraphicsPixmapItem {
-    QString uuid;
-//    QPixmap pixmap;
-    Circuit::Element* instance;
-    QList<WorkbenchConnectionGraphicsItem*> connectionList;
+/**
+ * Root class of all workbench circuit graphics items
+ */
+class WorkbenchGraphicsItem : public QGraphicsItem {
+    DISABLE_COPY(WorkbenchGraphicsItem) //no copy construct allowed
 public:
-    explicit WorkbenchElementGraphicsItem(const QPixmap&, QGraphicsItem* parent = 0);
-    ~WorkbenchElementGraphicsItem();
+    enum ItemType {
+        Unknow = UserType + 1,
+        Node,
+        Connection,
+        Element
+    };
+    explicit WorkbenchGraphicsItem(ItemType _type = Unknow, const QString& _uuid = QString(), QGraphicsItem* parent = 0);
+    virtual ~WorkbenchGraphicsItem() = 0;
+    
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) = 0;
+    virtual QRectF boundingRect() const = 0;
 
-    inline Circuit::Element* getInstance() const{return instance;}
-    inline void setInstance(Circuit::Element* _instance){
-        instance = _instance;
-        if(instance)
-            uuid = instance->getUUID();
+    inline virtual int type() const {
+        return itemType;
     }
     
-    inline QString getUUID() const {
+    inline QString getUuid() const {
         return uuid;
     }
-    
-    inline void setUUID(const QString& _uuid) {
+    inline void setUuid(const QString& _uuid) {
         uuid = _uuid;
     }
-    
-    inline void appendConnection(WorkbenchConnectionGraphicsItem* _connection) {
-        connectionList.append(_connection);
-    }
-    
-    void removeConnection(WorkbenchConnectionGraphicsItem* _connection);
-protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+private:
+    QString uuid;
+    ItemType itemType;
 };
 
+class WorkbenchNodeGraphicsItem;
+class WorkbenchConnectionGraphicsItem;
+class WorkbenchElementGraphicsItem;
+
+/**
+ * Workbench circuit node graphics item
+ */
+class WorkbenchNodeGraphicsItem:public WorkbenchGraphicsItem {
+    DISABLE_COPY(WorkbenchNodeGraphicsItem) //no copy construct allowed
+public:
+    explicit WorkbenchNodeGraphicsItem(QGraphicsItem* parent = 0);
+    ~WorkbenchNodeGraphicsItem();
+};
+
+/**
+ * Workbench circuit connection graphics item
+ */
+//this class will be redesigned. this class will draw a line between two graphics items.
 class WorkbenchConnectionGraphicsItem : public QGraphicsLineItem {
     QString uuid;
     Circuit::Connection* instance; //point to a existing connection
     WorkbenchElementGraphicsItem* elementA;
     WorkbenchElementGraphicsItem* elementB;
+    DISABLE_COPY(WorkbenchConnectionGraphicsItem) //no copy construct allowed
 public:
     explicit WorkbenchConnectionGraphicsItem(WorkbenchElementGraphicsItem* _elementA = 0, WorkbenchElementGraphicsItem* _elementB = 0, QGraphicsItem* parent = 0);
     ~WorkbenchConnectionGraphicsItem();
@@ -115,6 +132,44 @@ public:
     
     void removeConnection(WorkbenchElementGraphicsItem* _element);
     
+};
+
+/**
+ * Workbench circuit element graphics item
+ */
+class WorkbenchElementGraphicsItem : public QGraphicsPixmapItem {
+    QString uuid;
+    //    QPixmap pixmap;
+    Circuit::Element* instance;
+    QList<WorkbenchConnectionGraphicsItem*> connectionList;
+    
+    DISABLE_COPY(WorkbenchElementGraphicsItem) //no copy construct allowed
+public:
+    explicit WorkbenchElementGraphicsItem(const QPixmap&, QGraphicsItem* parent = 0);
+    ~WorkbenchElementGraphicsItem();
+    
+    inline Circuit::Element* getInstance() const{return instance;}
+    inline void setInstance(Circuit::Element* _instance){
+        instance = _instance;
+        if(instance)
+            uuid = instance->getUUID();
+    }
+    
+    inline QString getUUID() const {
+        return uuid;
+    }
+    
+    inline void setUUID(const QString& _uuid) {
+        uuid = _uuid;
+    }
+    
+    inline void appendConnection(WorkbenchConnectionGraphicsItem* _connection) {
+        connectionList.append(_connection);
+    }
+    
+    void removeConnection(WorkbenchConnectionGraphicsItem* _connection);
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant & value);
 };
 
 #endif

@@ -39,6 +39,12 @@
 #define END_NAMESPACE };
 #endif
 
+#if !defined(DISABLE_COPY)
+#define DISABLE_COPY(CLASS)\
+private:\
+    CLASS& operator= (const CLASS&);
+#endif
+
 BEGIN_NAMESPACE
 
 enum ToolType {
@@ -55,7 +61,7 @@ enum ToolItem {
     MoveCursor,
     ZoomCursor,
     //element
-    NodeElement,
+    NodeElement, // will be removed
     ResistorElement,
     CapacitorElement,
     InductorElement,
@@ -66,7 +72,7 @@ enum ToolItem {
 
 enum ElementType {
     CustomizedElement,
-    Node,
+    Node, // will be removed
     DC_VoltageSource,
     AC_VoltageSource,
     Resistor,

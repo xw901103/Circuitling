@@ -37,32 +37,46 @@
 #include "global.h"
 #include <QString>
 #include <QMap>
-//#include <QDomDocument>
 
+/**
+ * Circuitling circuit class
+ */
 class Circuit {
+    DISABLE_COPY(Circuit) //no copy construct allowed
 public:
     class Object;
-    class Element;
+    class Node;
     class Connection;
+    class Element;
 
     Circuit();
     ~Circuit();
     
     Object* getObject(const QString& uuid) const;
     void deleteObject(const QString& uuid);
+    
+    Node* getNode(const QString& uuid) const;
+    /**
+     * add an new node then return its uuid.
+     * @param _node node
+     * @return uuid of this node in the circuit
+     */
+    QString addNode(const Node& _node);
+    void deleteNode(const QString& uuid);
+    
 
     Element* getElement(const QString& uuid) const;
     /**
-     * add a new element then return its uuid.
+     * add an new element then return its uuid.
      * @param _element element
      * @return uuid of this element in the circuit
      */
     QString addElement(const Element& _element);
-    void deleteElement(const QString& _uuid);
+    void deleteElement(const QString& uuid);
 
     Connection* getConnection(const QString& uuid) const;
     /**
-     * add a new connection then return its uuid.
+     * add an new connection then return its uuid.
      * @param _connection connection
      * @return uuid of this element in the circuit
      */
@@ -86,26 +100,25 @@ public:
         title = _title;
     }
 
-//    QDomDocument toDomDocument();
 private:
-//    QMap<QString, Element> elementMap;
-//    QMap<QString, Connection> connectionMap;
     QMap<QString, Object*> objectMap;
     QString uuid;
     QString title;
-//    qreal x;
-//    qreal y;
 };
 
+/**
+ * Root class of all Circuitling circuit components
+ */
 class Circuit::Object {
 public:
     enum Type {
         Unknow,
-        Element,
-        Connection
+        Node,
+        Connection,
+        Element
     };
-    explicit Object(Type _type, const QString& _label = QString(), const QString& _uuid = QString()):type(_type), label(_label), uuid(_uuid){}
-    Object(const Object& _ref): type(_ref.type), label(_ref.label), uuid(_ref.uuid) {}
+    explicit Object(Type _type = Unknow, const QString& _label = QString(), const QString& _uuid = QString());
+    Object(const Object&);
     virtual ~Object() =0;
     
     inline Type getType() const{return type;}
@@ -117,102 +130,166 @@ public:
     inline const QString& getUUID() const{return uuid;}
     inline void setUUID(const QString& _uuid){uuid = _uuid;}
     
-    inline Object& operator =(const Object& ref) {
-        type = ref.type;
-        label = ref.label;
-        uuid = ref.uuid;
-        return *this;
-    }
+    Object& operator =(const Object& ref);
     
-    inline bool operator ==(const Object& ref) const {
-        return type == ref.type && uuid == ref.uuid && label == ref.label;
-    }
-    inline bool operator !=(const Object& ref) const {
-        return type != ref.type || uuid != ref.uuid || label != ref.label;
-    }
+    bool operator ==(const Object& ref) const;
+    bool operator !=(const Object& ref) const;
 private:
     Type type;
     QString label;
     QString uuid;
 };
 
+/**
+ * Circuitling circuit node class
+ */
+class Circuit::Node:public Object {
+    QList<QString> connectionUUIDList;
+    qreal x;
+    qreal y;
+    qreal z;
+public:
+    explicit Node(const QString& _label = QString());
+    explicit Node(qreal _x, qreal _y, qreal _z = 0);
+    explicit Node(const QString& _label, qreal _x, qreal _y, qreal _z = 0);
+    Node(const Node&);
+    ~Node();
+    
+    inline void appendConnection(const QString& _uuid) {
+        connectionUUIDList.append(_uuid);
+    }
+    
+    inline void removeConnection(const QString& _uuid) {
+        connectionUUIDList.removeAll(_uuid);
+    }
+    
+    inline const QList<QString>& connectionList() const{
+        return connectionUUIDList;
+    }
+    
+    inline qreal getX() const {
+        return x;
+    }
+    
+    inline qreal getY() const {
+        return y;
+    }
+    
+    inline qreal getZ() const {
+        return z;
+    }
+    
+    inline void locate(qreal _x, qreal _y, qreal _z = 0) {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
+    
+    Node& operator =(const Node& ref);
+    
+    bool operator ==(const Node& ref) const;
+    bool operator !=(const Node& ref) const;
+};
+
+/**
+ * Circuitling circuit connection class. it store a connection between two circuit objects.
+ * NOTE: the object has been stored should not be a connection. otherwise, the functionalities of other application components would be undefined.
+ */
+class Circuit::Connection:public Object{
+    QList<QString> objectUUIDList;
+public:
+    explicit Connection(const QString& _label = QString());
+    explicit Connection(const QString& _uuidA, const QString& _uuidB);
+    explicit Connection(const QString& _label, const QString& _uuidA, const QString& _uuidB);
+    Connection(const Connection&);
+    ~Connection();
+    
+    inline const QList<QString>& objectList() const{
+        return objectUUIDList;
+    }
+    
+    /**
+     * Clear stored object uuids in the list.
+     */
+    inline void clear() {
+        objectUUIDList.clear();
+    }
+    
+    inline void appendObject(const QString& _uuid) {
+        objectUUIDList.append(_uuid);
+    }
+    
+    inline void removeObject(const QString& _uuid) {
+        objectUUIDList.removeAll(_uuid);
+    }
+    
+    inline bool isValid() const{
+        return !objectUUIDList.isEmpty() && objectUUIDList.size() > 1;
+    }
+    
+    Connection& operator =(const Connection& ref);
+    
+    bool operator ==(const Connection& ref) const;
+    bool operator !=(const Connection& ref) const;
+};
+
+/**
+ * Circuitling circuit element class
+ */
 class Circuit::Element:public Object {
     Circuitling::ElementType elementType;
     qreal x;
     qreal y;
+    qreal z;
+    QList<QString> connectionUUIDList;
 public:
-    explicit Element(Circuitling::ElementType _type);
-    explicit Element(const QString& _label, Circuitling::ElementType _type);
-    explicit Element(qreal _x, qreal _y, Circuitling::ElementType _type);
+    explicit Element(Circuitling::ElementType _type, const QString& _label = QString());
+    explicit Element(Circuitling::ElementType _type, qreal _x, qreal _y, qreal _z = 0);
+    explicit Element(Circuitling::ElementType _type, const QString& _label, qreal _x, qreal _y, qreal _z = 0);
     Element(const Element&);
     ~Element();
-
-    Element& operator =(const Element&);
-
-    bool operator ==(const Element&) const;
-    bool operator !=(const Element&) const;
-
+    
     inline Circuitling::ElementType getElementType() const {
         return elementType;
     }
-
+    
     inline void setElementType(Circuitling::ElementType _type) {
         elementType = _type;
     }
-
+    
+    inline void appendConnection(const QString& _uuid) {
+        connectionUUIDList.append(_uuid);
+    }
+    
+    inline void removeConnection(const QString& _uuid) {
+        connectionUUIDList.removeAll(_uuid);
+    }
+    
+    inline const QList<QString>& connectionList() const{
+        return connectionUUIDList;
+    }
+    
     inline qreal getX() const {
         return x;
     }
-
+    
     inline qreal getY() const {
         return y;
     }
-
-    inline void locate(qreal _x, qreal _y) {
+    
+    inline qreal getZ() const {
+        return z;
+    }
+    
+    inline void locate(qreal _x, qreal _y, qreal _z = 0) {
         x = _x;
         y = _y;
-    }
-};
-
-class Circuit::Connection:public Object{
-    class Element* elementA;
-    class Element* elementB;
-public:
-    explicit Connection(class Element* a, class Element* b);
-    Connection(const Connection&);
-    ~Connection();
-
-    Connection& operator =(const Connection&);
-
-    bool operator==(const Connection&) const;
-    bool operator!=(const Connection&) const;
-    
-    inline class Element* getConnectedElement(class Element* element) const{
-        if(element == elementA || element == elementB)
-            return element == elementA ? elementB : elementA;
-        return 0;
-    }
-
-    inline class Element* getElementA() const {
-        return elementA;
-    }
-
-    inline void setElementA(class Element* _a) {
-        elementA = _a;
-    }
-
-    inline class Element* getElementB() const {
-        return elementB;
-    }
-
-    inline void setElementB(class Element* _b) {
-        elementB = _b;
+        z = _z;
     }
     
-    inline bool isValid() const{
-        return elementA && elementB;
-    }
-
+    Element& operator =(const Element&);
+    bool operator ==(const Element&) const;
+    bool operator !=(const Element&) const;
 };
 
 #endif

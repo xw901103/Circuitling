@@ -31,27 +31,24 @@
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#ifndef CIRCUITEXPORTER_H
-#define CIRCUITEXPORTER_H
+#include "circuitdomdocumentexporter.h"
+#include "circuit.h"
+#include <QDomDocument>
 
-#include "global.h"
+CircuitDomDocumentExporter::CircuitDomDocumentExporter(QObject* parent):CircuitExporter("*.xml", parent){}
 
-#include <QObject>
-#include <QIODevice>
+CircuitDomDocumentExporter::~CircuitDomDocumentExporter() {}
 
-class Circuit;
-
-class CircuitExporter:public QObject {
-private:
-    QString p_extension;
-public:
-    explicit CircuitExporter(const QString& _extension,QObject* parent = 0);
-    virtual ~CircuitExporter() = 0;
-
-    inline QString getFilenameExtension() const {return p_extension;}
-    inline void setFilenameExtension(const QString& _extension) {p_extension = _extension;}
-    
-    virtual void exportCircuitTo(Circuit*, QIODevice*) = 0;
-};
-
-#endif
+// this implementation will be re-coded.
+void CircuitDomDocumentExporter::exportCircuitTo(Circuit * _circuit, QIODevice * _device) {
+    if (_circuit && _device){
+        QDomDocument doc;
+        QDomElement root = doc.createElement("xml");
+        QDomElement circuit = doc.createElement("circuit");
+        QDomElement circuitUUID = doc.createElement("uuid");
+        circuitUUID.appendChild(doc.createCDATASection(_circuit->getUUID()));
+        circuit.appendChild(circuitUUID);
+        root.appendChild(circuit);
+        doc.appendChild(root);        
+    }
+}

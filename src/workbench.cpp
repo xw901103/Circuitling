@@ -39,7 +39,6 @@
 #include "workbench.h"
 #include "circuitlingapplication.h"
 #include "circuit.h"
-#include "circuitdomdocumentparser.h"
 #include "workbenchwindow.h"
 #include "circuitelementconfigurationdialog.h"
 #include "toolboxdockwidget.h"
@@ -132,6 +131,7 @@ void Workbench::save() {
         return;
     }
 //    QDomDocument doc = circuit->toDomDocument();
+/*
     QDomDocument doc = CircuitDomDocumentParser::parseCircuitToDomDocument(circuit);
     QDomElement root = doc.documentElement();
     doc.insertBefore(doc.createComment("Created by Circuitling"), root);
@@ -150,6 +150,7 @@ void Workbench::save() {
     file.close();
     if (window)
         window->setWindowTitle(tr("Circuitling - %1").arg(file.fileName()));
+ */
 }
 
 void Workbench::saveAs() {
@@ -202,35 +203,35 @@ void Workbench::addItemToScene(qreal x, qreal y) {
                     break;
                 case Circuitling::NodeElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/node.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Node));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::Node, x, y));
                     break;
                 case Circuitling::DC_VoltageSourceElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/dc_voltage_source.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::DC_VoltageSource));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::DC_VoltageSource, x, y));
                     break;
                 case Circuitling::AC_VoltageSourceElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/ac_voltage_source.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::AC_VoltageSource));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::AC_VoltageSource, x, y));
                     break;
                 case Circuitling::ResistorElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/resistor.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Resistor));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::Resistor, x, y));
                     break;
                 case Circuitling::CapacitorElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/capacitor.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Capacitor));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::Capacitor, x, y));
                     break;
                 case Circuitling::InductorElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/inductor.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Inductor));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::Inductor, x, y));
                     break;
                 case Circuitling::DiodeElement:
                     workbenchItem = new WorkbenchElementGraphicsItem(QPixmap(":/resources/elements/diode.png"));
-                    uuid = circuit->addElement(Circuit::Element(x, y, Circuitling::Diode));
+                    uuid = circuit->addElement(Circuit::Element(Circuitling::Diode, x, y));
                     break;
             }
         }
-        if(workbenchItem){
+        if(workbenchItem) {
             workbenchItem->setInstance(circuit->getElement(uuid));
             item = static_cast<QGraphicsItem*>(workbenchItem);
             WorkbenchGraphicsScene* scene = static_cast<WorkbenchGraphicsScene*>(window->graphicsView()->scene());
@@ -345,7 +346,7 @@ void Workbench::processClickedItem(QGraphicsItem * item){
                 currentConnectionItem->setElementB(static_cast<WorkbenchElementGraphicsItem*>(item));
 //                currentConnectionItem->setLine(QLineF(currentConnectionItem->getElementA()->pos(),item->pos()));
                 currentConnectionItem->refresh();
-                QString uuid = circuit->addConnection(Circuit::Connection(currentConnectionItem->getElementA()->getInstance(), currentConnectionItem->getElementB()->getInstance()));
+                QString uuid = circuit->addConnection(Circuit::Connection(currentConnectionItem->getElementA()->getUUID(), currentConnectionItem->getElementB()->getUUID()));
                 currentConnectionItem->setInstance(circuit->getConnection(uuid));
                 currentConnectionItem->setToolTip(uuid);
                 WorkbenchGraphicsScene* scene = static_cast<WorkbenchGraphicsScene*>(window->graphicsView()->scene());

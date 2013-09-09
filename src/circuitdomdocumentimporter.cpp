@@ -31,27 +31,16 @@
  * authors:Xu Waycell [xw901103@gmail.com]
  */
 
-#ifndef CIRCUITEXPORTER_H
-#define CIRCUITEXPORTER_H
+#include "circuitdomdocumentimporter.h"
+#include "circuit.h"
+#include <QDomDocument>
 
-#include "global.h"
+CircuitDomDocumentImporter::CircuitDomDocumentImporter(QObject* parent):CircuitImporter("*.xml", parent){}
 
-#include <QObject>
-#include <QIODevice>
+CircuitDomDocumentImporter::~CircuitDomDocumentImporter() {}
 
-class Circuit;
-
-class CircuitExporter:public QObject {
-private:
-    QString p_extension;
-public:
-    explicit CircuitExporter(const QString& _extension,QObject* parent = 0);
-    virtual ~CircuitExporter() = 0;
-
-    inline QString getFilenameExtension() const {return p_extension;}
-    inline void setFilenameExtension(const QString& _extension) {p_extension = _extension;}
-    
-    virtual void exportCircuitTo(Circuit*, QIODevice*) = 0;
-};
-
-#endif
+// this implementation will be re-coded.
+void CircuitDomDocumentImporter::importCircuitFrom(Circuit * _circuit, QIODevice * _device) {
+    if (_circuit && _device){
+    }
+}

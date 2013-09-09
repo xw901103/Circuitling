@@ -47,35 +47,6 @@ QString Circuit::getUUID() {
     return uuid; //it will cast to QString
 }
 
-/*
-QDomDocument Circuit::toDomDocument() {
-    QDomDocument doc;
-    QDomElement root = doc.createElement("xml");
-    QDomElement circuit = doc.createElement("circuit");
-    QDomElement circuitUUID = doc.createElement("uuid");
-    circuitUUID.appendChild(doc.createCDATASection(getUUID()));
-    circuit.appendChild(circuitUUID);
-
-//    for (QMap<QString, Element>::const_iterator iter = elementMap.begin(); iter != elementMap.end(); ++iter) {
-//        QDomElement element = doc.createElement("element");
-
-//        QDomElement elementX = doc.createElement("x");
-//        elementX.appendChild(doc.createTextNode("0"));
-//        QDomElement elementY = doc.createElement("y");
-//        elementY.appendChild(doc.createTextNode("0"));
-        //coordinate tags
-//        element.appendChild(elementX);
-//        element.appendChild(elementY);
-
-//        circuit.appendChild(element);
-//    }
- 
-    root.appendChild(circuit);
-    doc.appendChild(root);
-    return doc;
-}
-*/
-
 Circuit::Object* Circuit::getObject(const QString& _uuid) const{
     QMap<QString, Object*>::const_iterator iter = objectMap.find(_uuid);
     if (iter != objectMap.end())
@@ -139,59 +110,127 @@ void Circuit::deleteConnection(const QString& _uuid) {
         }
 }
 
-Circuit::Object::~Object(){}
-
-Circuit::Element::Element(Circuitling::ElementType _type) : Object(Object::Element), elementType(_type), x(0.0), y(0.0) {
+Circuit::Object::Object(Type _type, const QString& _label, const QString& _uuid):type(_type), label(_label), uuid(_uuid) {
 }
 
-Circuit::Element::Element(const QString& _label, Circuitling::ElementType _type) : Object(Object::Element, _label), elementType(_type), x(0.0), y(0.0) {
+Circuit::Object::Object(const Object& _ref): type(_ref.type), label(_ref.label), uuid(_ref.uuid) {
 }
 
-Circuit::Element::Element(qreal _x, qreal _y, Circuitling::ElementType _type) : Object(Object::Element), elementType(_type), x(_x), y(_y) {
+Circuit::Object::~Object() {
 }
 
-Circuit::Element::Element(const Element& _ref) : Object(_ref), elementType(_ref.elementType), x(_ref.x), y(_ref.y) {
+Circuit::Object& Circuit::Object::operator =(const Object& ref) {
+    type = ref.type;
+    label = ref.label;
+    uuid = ref.uuid;
+    return *this;
+}
+
+bool Circuit::Object::operator ==(const Object& ref) const {
+    return type == ref.type && uuid == ref.uuid && label == ref.label;
+}
+
+bool Circuit::Object::operator !=(const Object& ref) const {
+    return type != ref.type || uuid != ref.uuid || label != ref.label;
+}
+
+
+Circuit::Node::Node(const QString& _label):Object(Object::Node, _label), x(0.0), y(0.0), z(0.0) {
+}
+
+Circuit::Node::Node(qreal _x, qreal _y, qreal _z):Object(Object::Node), x(_x), y(_y), z(_z) {
+}
+
+Circuit::Node::Node(const QString& _label, qreal _x, qreal _y, qreal _z):Object(Object::Node, _label), x(_x), y(_y), z(_z) {
+    
+}
+
+Circuit::Node::Node(const Node& _ref):Object(_ref), connectionUUIDList(_ref.connectionUUIDList), x(_ref.x), y(_ref.y), z(_ref.z) {
+}
+
+Circuit::Node::~Node() {
+}
+
+Circuit::Node& Circuit::Node::operator =(const Node& _ref) {
+    connectionUUIDList = _ref.connectionUUIDList;
+    x = _ref.x;
+    y = _ref.y;
+    z = _ref.z;
+    Object::operator =(_ref);
+    return *this;
+}
+
+bool Circuit::Node::operator ==(const Node& ref) const {
+    return x == ref.x && y == ref.y && z == ref.z && connectionUUIDList == ref.connectionUUIDList && Object::operator ==(ref);
+}
+
+bool Circuit::Node::operator !=(const Node& ref) const {
+    return x != ref.x || y != ref.y || z != ref.z || connectionUUIDList != ref.connectionUUIDList || Object::operator !=(ref);
+}
+
+Circuit::Connection::Connection(const QString& _label):Object(Object::Connection, _label) {
+}
+
+Circuit::Connection::Connection(const QString& _uuidA, const QString& _uuidB):Object(Object::Connection) {
+    objectUUIDList.append(_uuidA);
+    objectUUIDList.append(_uuidB);
+}
+
+Circuit::Connection::Connection(const QString& _label, const QString& _uuidA, const QString& _uuidB):Object(Object::Connection, _label) {
+    objectUUIDList.append(_uuidA);
+    objectUUIDList.append(_uuidB);
+}
+
+Circuit::Connection::Connection(const Connection& _ref): Object(_ref), objectUUIDList(_ref.objectUUIDList) {
+}
+
+Circuit::Connection::~Connection() {
+}
+
+Circuit::Connection& Circuit::Connection::operator =(const Connection& ref) {
+    objectUUIDList = ref.objectUUIDList;
+    Object::operator =(ref);
+    return *this;
+}
+
+bool Circuit::Connection::operator ==(const Connection& ref) const {
+    return objectUUIDList == ref.objectUUIDList && Object::operator ==(ref);
+}
+
+bool Circuit::Connection::operator !=(const Connection& ref) const {
+    return objectUUIDList != ref.objectUUIDList || Object::operator !=(ref);
+}
+
+
+Circuit::Element::Element(Circuitling::ElementType _type, const QString& _label) : Object(Object::Element, _label), elementType(_type), x(0.0), y(0.0), z(0.0) {
+}
+
+Circuit::Element::Element(Circuitling::ElementType _type, qreal _x, qreal _y, qreal _z) : Object(Object::Element), elementType(_type), x(_x), y(_y), z(_z) {
+}
+
+Circuit::Element::Element(Circuitling::ElementType _type, const QString& _label, qreal _x, qreal _y, qreal _z):Object(Object::Element, _label), elementType(_type), x(_x), y(_y), z(_z) {
+}
+
+Circuit::Element::Element(const Element& _ref):Object(_ref), elementType(_ref.elementType), x(_ref.x), y(_ref.y), z(_ref.z), connectionUUIDList(_ref.connectionUUIDList) {
 }
 
 Circuit::Element::~Element() {
 }
 
 Circuit::Element& Circuit::Element::operator =(const Element& _ref) {
-    Object::operator=(_ref);
     elementType = _ref.elementType;
     x = _ref.x;
     y = _ref.y;
+    z = _ref.z;
+    connectionUUIDList = _ref.connectionUUIDList;
+    Object::operator =(_ref);
     return *this;
 }
 
 bool Circuit::Element::operator ==(const Element& _ref) const {
-    return Object::operator==(_ref) && elementType == _ref.elementType && x == _ref.x && y == _ref.y;
+    return elementType == _ref.elementType && x == _ref.x && y == _ref.y && z == _ref.z && connectionUUIDList == _ref.connectionUUIDList && Object::operator ==(_ref);
 }
 
 bool Circuit::Element::operator !=(const Element& _ref) const {
-    return Object::operator!=(_ref) || elementType != _ref.elementType || x != _ref.x || y != _ref.y;
-}
-
-Circuit::Connection::Connection(class Element* a, class Element* b) : Object(Object::Connection), elementA(a), elementB(b) {
-}
-
-Circuit::Connection::Connection(const Connection& _ref) : Object(_ref), elementA(_ref.elementA), elementB(_ref.elementB) {
-}
-
-Circuit::Connection::~Connection() {
-}
-
-Circuit::Connection& Circuit::Connection::operator =(const Connection& _ref) {
-    Object::operator=(_ref);
-    elementA = _ref.elementA;
-    elementB = _ref.elementB;
-    return *this;
-}
-
-bool Circuit::Connection::operator ==(const Connection& _ref) const {
-    return Object::operator==(_ref) && elementA == _ref.elementA && elementB == _ref.elementB;
-}
-
-bool Circuit::Connection::operator !=(const Connection& _ref) const {
-    return Object::operator!=(_ref) || elementA != _ref.elementA || elementB != _ref.elementB;
+    return elementType != _ref.elementType || x != _ref.x || y != _ref.y || z != _ref.z || connectionUUIDList != _ref.connectionUUIDList || Object::operator !=(_ref);
 }

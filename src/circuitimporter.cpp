@@ -33,8 +33,8 @@
 
 #include "circuitimporter.h"
 
-CircuitImporter::CircuitImporter(QObject* parent):QObject(parent){}
+CircuitImporter::CircuitImporter(const QString& _extension, QObject* parent):QObject(parent), p_extension(_extension){}
 
 CircuitImporter::~CircuitImporter(){}
 
-void CircuitImporter::importFrom(Circuit *, QIODevice *){}
+void CircuitImporter::importCircuitFrom(Circuit *, QIODevice *){}

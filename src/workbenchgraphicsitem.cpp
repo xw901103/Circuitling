@@ -35,6 +35,18 @@
 
 #include <QPen>
 
+WorkbenchGraphicsItem::WorkbenchGraphicsItem(ItemType _type, const QString& _uuid, QGraphicsItem* parent):QGraphicsItem(parent), uuid(_uuid), itemType(_type){
+}
+
+WorkbenchGraphicsItem::~WorkbenchGraphicsItem() {
+}
+
+WorkbenchNodeGraphicsItem::WorkbenchNodeGraphicsItem(QGraphicsItem* parent): WorkbenchGraphicsItem(Node, QString(), parent) {
+}
+
+WorkbenchNodeGraphicsItem::~WorkbenchNodeGraphicsItem() {
+}
+
 WorkbenchElementGraphicsItem::WorkbenchElementGraphicsItem(const QPixmap& _pixmap, QGraphicsItem* parent) : QGraphicsPixmapItem(_pixmap, parent), instance(0){
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);

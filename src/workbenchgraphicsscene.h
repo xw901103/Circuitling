@@ -48,6 +48,11 @@ class WorkbenchGraphicsScene : public QGraphicsScene {
     friend class WorkbenchGraphicsView;
     
     QMap<QString, QGraphicsItem*> itemMap;
+
+    QMap<QGraphicsItem*, QString> itemUUIDMap;
+    
+    QMap<QString, WorkbenchElementGraphicsItem*> elementMap;
+    QMap<QString, WorkbenchConnectionGraphicsItem*> connectionMap;
 public:
     explicit WorkbenchGraphicsScene(QObject* parent = 0);
     ~WorkbenchGraphicsScene();
