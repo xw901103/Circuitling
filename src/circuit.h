@@ -52,6 +52,8 @@ public:
     Circuit();
     ~Circuit();
     
+    const QMap<QString, Object*>& getObjectMap() const;
+    
     Object* getObject(const QString& uuid) const;
     void deleteObject(const QString& uuid);
     
@@ -112,12 +114,12 @@ private:
 class Circuit::Object {
 public:
     enum Type {
-        Unknow,
-        Node,
-        Connection,
-        Element
+        UNKNOW,
+        NODE,
+        ELEMENT,
+        CONNECTION
     };
-    explicit Object(Type _type = Unknow, const QString& _label = QString(), const QString& _uuid = QString());
+    explicit Object(Type _type = UNKNOW, const QString& _label = QString(), const QString& _uuid = QString());
     Object(const Object&);
     virtual ~Object() =0;
     

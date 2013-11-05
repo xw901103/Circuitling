@@ -35,11 +35,14 @@
 #include "preferencesdialog.h"
 #include "workbench.h"
 
+#include "circuitdomdocumentimporter.h"
+#include "circuitdomdocumentexporter.h"
+
 #include <QDesktopServices>
 #include <QDir>
 #include <QMessageBox>
 
-CircuitlingApplication::CircuitlingApplication(int argc, char** argv) : QObject(0), app(0), prefDialog(0) {
+CircuitlingApplication::CircuitlingApplication(int argc, char** argv) : QObject(0), app(0), prefDialog(0), exporter(0), importer(0) {
     app = new QApplication(argc, argv);
 }
 
@@ -47,15 +50,42 @@ CircuitlingApplication::~CircuitlingApplication() {
 //DO NOT DESTROY QApplication OBJECT
 //    if (app)
 //        delete app;
+    for (QList<CircuitImporter*>::Iterator iter = importerList.begin(); iter != importerList.end(); ++iter)
+        delete *iter;
+    for (QList<CircuitExporter*>::Iterator iter = exporterList.begin(); iter != exporterList.end(); ++iter)
+        delete *iter;
 }
 
 bool CircuitlingApplication::initialize(){
     QDir dir;
     if(dir.mkpath(getApplicationDataPath())){
+        
+        exporter = new CircuitDomDocumentExporter(this);
+        importer = new CircuitDomDocumentImporter(this);
+        
+        importerList.append(importer);
+        exporterList.append(exporter);
+        
         return true;
     }
     return false;
 }
+
+CircuitExporter* CircuitlingApplication::getCircuitExporter() const {
+    return exporter;
+}
+
+CircuitImporter* CircuitlingApplication::getCircuitImporter() const {
+    return importer;
+}
+
+const QList<CircuitExporter*>& CircuitlingApplication::getCircuitExporterList() const{
+    return exporterList;
+}
+const QList<CircuitImporter*>& CircuitlingApplication::getCircuitImporterList() const{
+    return importerList;
+}
+
 
 void CircuitlingApplication::createWorkbench() {
     Workbench* workbench = new Workbench(this);

@@ -47,6 +47,9 @@
 #include "workbenchgraphicsscene.h"
 #include "workbenchgraphicsview.h"
 #include "toolboxdockwidget.h"
+
+#include "circuitexporter.h"
+#include "circuitimporter.h"
 //test reason
 #include <QGraphicsPixmapItem>
 
@@ -120,9 +123,10 @@ void Workbench::exportTo() {
 }
 
 void Workbench::save() {
-    if (!circuit)
+    CircuitExporter* exporter = static_cast<CircuitlingApplication*>(parent())->getCircuitExporter();
+    if (!circuit || !exporter)
         return;
-    QString filepath = QFileDialog::getSaveFileName(window, tr("Save..."));
+    QString filepath = QFileDialog::getSaveFileName(window, tr("Save..."), QString(), exporter->getFilenameExtension());
     if (filepath.isEmpty())
         return;
     QFile file(filepath);
@@ -130,6 +134,9 @@ void Workbench::save() {
         QMessageBox::warning(window, tr("Warning"), tr("Cannot write file.\npath:%1").arg(filepath));
         return;
     }
+    exporter->exportCircuitTo(circuit, &file);
+    file.close();
+    
 //    QDomDocument doc = circuit->toDomDocument();
 /*
     QDomDocument doc = CircuitDomDocumentParser::parseCircuitToDomDocument(circuit);

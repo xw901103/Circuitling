@@ -41,6 +41,10 @@ Circuit::Circuit() {
 Circuit::~Circuit() {
 }
 
+const QMap<QString, Circuit::Object*>& Circuit::getObjectMap() const {
+    return objectMap;
+}
+
 QString Circuit::getUUID() {
     if (uuid.isEmpty())
         uuid = QUuid::createUuid();
@@ -65,7 +69,7 @@ void Circuit::deleteObject(const QString & _uuid) {
 Circuit::Element* Circuit::getElement(const QString& _uuid) const {
     Object* obj = getObject(_uuid);
     if (obj)
-        if (obj->getType() == Object::Element)
+        if (obj->getType() == Object::ELEMENT)
             return static_cast<Element*>(obj);
     return 0;
 }
@@ -80,7 +84,7 @@ QString Circuit::addElement(const Element& _element) {
 void Circuit::deleteElement(const QString& _uuid) {
     QMap<QString, Object*>::iterator iter = objectMap.find(_uuid);
     if (iter != objectMap.end())
-        if ((*iter)->getType() == Object::Element) {
+        if ((*iter)->getType() == Object::ELEMENT) {
             delete (*iter);
             objectMap.erase(iter);
         }
@@ -89,7 +93,7 @@ void Circuit::deleteElement(const QString& _uuid) {
 Circuit::Connection* Circuit::getConnection(const QString& _uuid) const {
     Object* obj = getObject(_uuid);
     if (obj)
-        if (obj->getType() == Object::Connection)
+        if (obj->getType() == Object::CONNECTION)
             return static_cast<Connection*>(obj);
     return 0;
 }
@@ -104,7 +108,7 @@ QString Circuit::addConnection(const Connection& _connection) {
 void Circuit::deleteConnection(const QString& _uuid) {
     QMap<QString, Object*>::iterator iter = objectMap.find(_uuid);
     if (iter != objectMap.end())
-        if ((*iter)->getType() == Object::Connection) {
+        if ((*iter)->getType() == Object::CONNECTION) {
             delete (*iter);
             objectMap.erase(iter);
         }
@@ -135,13 +139,13 @@ bool Circuit::Object::operator !=(const Object& ref) const {
 }
 
 
-Circuit::Node::Node(const QString& _label):Object(Object::Node, _label), x(0.0), y(0.0), z(0.0) {
+Circuit::Node::Node(const QString& _label):Object(Object::NODE, _label), x(0.0), y(0.0), z(0.0) {
 }
 
-Circuit::Node::Node(qreal _x, qreal _y, qreal _z):Object(Object::Node), x(_x), y(_y), z(_z) {
+Circuit::Node::Node(qreal _x, qreal _y, qreal _z):Object(Object::NODE), x(_x), y(_y), z(_z) {
 }
 
-Circuit::Node::Node(const QString& _label, qreal _x, qreal _y, qreal _z):Object(Object::Node, _label), x(_x), y(_y), z(_z) {
+Circuit::Node::Node(const QString& _label, qreal _x, qreal _y, qreal _z):Object(Object::NODE, _label), x(_x), y(_y), z(_z) {
     
 }
 
@@ -168,15 +172,15 @@ bool Circuit::Node::operator !=(const Node& ref) const {
     return x != ref.x || y != ref.y || z != ref.z || connectionUUIDList != ref.connectionUUIDList || Object::operator !=(ref);
 }
 
-Circuit::Connection::Connection(const QString& _label):Object(Object::Connection, _label) {
+Circuit::Connection::Connection(const QString& _label):Object(Object::CONNECTION, _label) {
 }
 
-Circuit::Connection::Connection(const QString& _uuidA, const QString& _uuidB):Object(Object::Connection) {
+Circuit::Connection::Connection(const QString& _uuidA, const QString& _uuidB):Object(Object::CONNECTION) {
     objectUUIDList.append(_uuidA);
     objectUUIDList.append(_uuidB);
 }
 
-Circuit::Connection::Connection(const QString& _label, const QString& _uuidA, const QString& _uuidB):Object(Object::Connection, _label) {
+Circuit::Connection::Connection(const QString& _label, const QString& _uuidA, const QString& _uuidB):Object(Object::CONNECTION, _label) {
     objectUUIDList.append(_uuidA);
     objectUUIDList.append(_uuidB);
 }
@@ -202,13 +206,13 @@ bool Circuit::Connection::operator !=(const Connection& ref) const {
 }
 
 
-Circuit::Element::Element(Circuitling::ElementType _type, const QString& _label) : Object(Object::Element, _label), elementType(_type), x(0.0), y(0.0), z(0.0) {
+Circuit::Element::Element(Circuitling::ElementType _type, const QString& _label) : Object(Object::ELEMENT, _label), elementType(_type), x(0.0), y(0.0), z(0.0) {
 }
 
-Circuit::Element::Element(Circuitling::ElementType _type, qreal _x, qreal _y, qreal _z) : Object(Object::Element), elementType(_type), x(_x), y(_y), z(_z) {
+Circuit::Element::Element(Circuitling::ElementType _type, qreal _x, qreal _y, qreal _z) : Object(Object::ELEMENT), elementType(_type), x(_x), y(_y), z(_z) {
 }
 
-Circuit::Element::Element(Circuitling::ElementType _type, const QString& _label, qreal _x, qreal _y, qreal _z):Object(Object::Element, _label), elementType(_type), x(_x), y(_y), z(_z) {
+Circuit::Element::Element(Circuitling::ElementType _type, const QString& _label, qreal _x, qreal _y, qreal _z):Object(Object::ELEMENT, _label), elementType(_type), x(_x), y(_y), z(_z) {
 }
 
 Circuit::Element::Element(const Element& _ref):Object(_ref), elementType(_ref.elementType), x(_ref.x), y(_ref.y), z(_ref.z), connectionUUIDList(_ref.connectionUUIDList) {

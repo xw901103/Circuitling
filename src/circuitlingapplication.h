@@ -61,10 +61,18 @@ public:
     
     void loadApplicationConfiguration(const QString& path);
     void saveApplicationConfiguration(const QString& path);
+    
+    CircuitExporter* getCircuitExporter() const;
+    CircuitImporter* getCircuitImporter() const;
+    
+    const QList<CircuitExporter*>& getCircuitExporterList() const;
+    const QList<CircuitImporter*>& getCircuitImporterList() const;
 private:
     bool initialize();
     QApplication* app;
     PreferencesDialog* prefDialog;
+    CircuitExporter* exporter;
+    CircuitImporter* importer;
     QList<CircuitExporter*> exporterList;
     QList<CircuitImporter*> importerList;
     QList<Workbench*> workbenchList;
